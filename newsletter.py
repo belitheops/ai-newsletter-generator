@@ -349,7 +349,7 @@ class NewsletterGenerator:
                 </div>
                 <div class="story-summary">{summary}</div>
                 {key_points_html}
-                <a href="{url}" class="read-more" target="_blank" rel="noopener">Read Full Article →</a>
+                <a href="{url}" class="read-more" onclick="window.open('{url}', '_blank'); return false;" rel="noopener">Read Full Article →</a>
             </div>
         </div>
         """
