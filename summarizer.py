@@ -16,9 +16,8 @@ class ArticleSummarizer:
         else:
             self.client = OpenAI(api_key=api_key)
         
-        # the newest OpenAI model is "gpt-5" which was released August 7, 2025.
-        # do not change this unless explicitly requested by the user
-        self.model = "gpt-5"
+        # Using GPT-4 Turbo for reliable summarization
+        self.model = "gpt-4-turbo-preview"
 
     def summarize_story(self, story: Dict) -> Dict:
         """
