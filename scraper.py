@@ -1,7 +1,11 @@
 import trafilatura
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from bs4 import BeautifulSoup
+import feedparser
 import time
+import random
 from datetime import datetime, timedelta
 from typing import List, Dict
 import logging
@@ -14,57 +18,90 @@ class NewsScraper:
     def __init__(self):
         self.sources = {
             'TechCrunch AI': {
-                'url': 'https://techcrunch.com/category/artificial-intelligence/',
-                'parser': self._parse_techcrunch
+                'type': 'rss',
+                'url': 'https://techcrunch.com/category/artificial-intelligence/feed/'
             },
             'MIT News AI/ML': {
-                'url': 'https://news.mit.edu/topic/artificial-intelligence2',
-                'parser': self._parse_mit_news
-            },
-            'AI News': {
-                'url': 'https://artificialintelligence-news.com/',
-                'parser': self._parse_ai_news
-            },
-            'MIT Tech Review': {
-                'url': 'https://www.technologyreview.com/topic/artificial-intelligence/',
-                'parser': self._parse_mit_review
+                'type': 'rss',
+                'url': 'https://news.mit.edu/rss/topic/artificial-intelligence2'
             },
             'VentureBeat AI': {
-                'url': 'https://venturebeat.com/ai/',
-                'parser': self._parse_venturebeat
+                'type': 'rss',
+                'url': 'https://venturebeat.com/category/ai/feed/'
             },
             'Wired AI': {
-                'url': 'https://www.wired.com/tag/artificial-intelligence/',
-                'parser': self._parse_wired
-            },
-            'Forbes AI': {
-                'url': 'https://www.forbes.com/ai/',
-                'parser': self._parse_forbes
-            },
-            'OpenAI Blog': {
-                'url': 'https://openai.com/blog/',
-                'parser': self._parse_openai_blog
+                'type': 'rss',
+                'url': 'https://www.wired.com/feed/tag/ai/latest/rss'
             },
             'ScienceDaily AI': {
-                'url': 'https://www.sciencedaily.com/news/computers_math/artificial_intelligence/',
-                'parser': self._parse_sciencedaily
+                'type': 'rss',
+                'url': 'https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml'
             },
             'The Verge AI': {
-                'url': 'https://www.theverge.com/ai-artificial-intelligence',
-                'parser': self._parse_verge
+                'type': 'rss',
+                'url': 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml'
+            },
+            'AI News': {
+                'type': 'rss',
+                'url': 'https://artificialintelligence-news.com/feed/'
+            },
+            'MIT Tech Review': {
+                'type': 'rss',
+                'url': 'https://www.technologyreview.com/topic/artificial-intelligence/feed'
+            },
+            'Forbes AI': {
+                'type': 'rss',
+                'url': 'https://www.forbes.com/ai/feed/'
+            },
+            'OpenAI Blog': {
+                'type': 'rss',
+                'url': 'https://openai.com/blog/rss.xml'
             }
         }
         
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        # Create session with retry logic
+        self.session = self._create_session()
+        
+        # Randomized modern headers
+        self.user_agents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15'
+        ]
+    
+    def _create_session(self):
+        """Create requests session with retry logic"""
+        session = requests.Session()
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=2,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["GET"]
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        return session
+    
+    def _get_headers(self):
+        """Get randomized headers"""
+        return {
+            'User-Agent': random.choice(self.user_agents),
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1'
         }
 
     def get_website_text_content(self, url: str) -> str:
-        """Extract main text content from a website URL using trafilatura"""
+        """Extract main text content from a website URL using trafilatura with session"""
         try:
-            downloaded = trafilatura.fetch_url(url)
-            if downloaded:
-                text = trafilatura.extract(downloaded)
+            response = self.session.get(url, headers=self._get_headers(), timeout=15)
+            if response.status_code == 200:
+                text = trafilatura.extract(response.content)
                 return text or ""
             return ""
         except Exception as e:
@@ -74,312 +111,99 @@ class NewsScraper:
     def scrape_all_sources(self) -> List[Dict]:
         """Scrape articles from all configured news sources"""
         all_articles = []
+        failed_sources = []
         
         for source_name, source_config in self.sources.items():
             try:
                 logger.info(f"Scraping {source_name}...")
                 articles = self._scrape_source(source_name, source_config)
-                all_articles.extend(articles)
-                time.sleep(1)  # Be respectful to servers
+                if articles:
+                    all_articles.extend(articles)
+                    logger.info(f"✅ {source_name}: {len(articles)} articles")
+                else:
+                    failed_sources.append(source_name)
+                    logger.warning(f"⚠️ {source_name}: 0 articles")
+                
+                # Jittered pacing: 2-5 seconds between sources
+                time.sleep(random.uniform(2, 5))
             except Exception as e:
-                logger.error(f"Error scraping {source_name}: {e}")
+                logger.error(f"❌ Error scraping {source_name}: {e}")
+                failed_sources.append(source_name)
                 continue
         
-        # Filter articles from last 24 hours
-        recent_articles = self._filter_recent_articles(all_articles)
-        logger.info(f"Total articles scraped: {len(all_articles)}, Recent (24h): {len(recent_articles)}")
+        # Log summary
+        logger.info(f"Total articles scraped: {len(all_articles)} from {len(self.sources) - len(failed_sources)}/{len(self.sources)} sources")
+        if failed_sources:
+            logger.warning(f"Failed sources: {', '.join(failed_sources)}")
+        
+        # Filter articles from last 7 days (increased from 24h for better results)
+        recent_articles = self._filter_recent_articles(all_articles, hours=168)
+        logger.info(f"Recent articles (7 days): {len(recent_articles)}")
         
         return recent_articles
 
     def _scrape_source(self, source_name: str, source_config: Dict) -> List[Dict]:
-        """Scrape articles from a single source"""
+        """Scrape articles from a single source using RSS"""
         try:
-            response = requests.get(source_config['url'], headers=self.headers, timeout=10)
-            response.raise_for_status()
-            
-            soup = BeautifulSoup(response.content, 'html.parser')
-            articles = source_config['parser'](soup, source_config['url'])
-            
-            # Add full content for each article
-            for article in articles:
-                if article.get('url'):
-                    article['full_content'] = self.get_website_text_content(article['url'])
-                    article['source'] = source_name
-            
-            return articles
+            if source_config['type'] == 'rss':
+                return self._scrape_rss_feed(source_name, source_config['url'])
+            else:
+                logger.error(f"Unknown source type for {source_name}")
+                return []
         except Exception as e:
             logger.error(f"Error scraping {source_name}: {e}")
             return []
-
-    def _parse_techcrunch(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse TechCrunch articles"""
-        articles = []
-        article_elements = soup.find_all('article', class_='post-block')[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h2') or element.find('h3')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    if url and not url.startswith('http'):
-                        url = f"https://techcrunch.com{url}"
+    
+    def _scrape_rss_feed(self, source_name: str, feed_url: str) -> List[Dict]:
+        """Scrape articles from RSS feed"""
+        try:
+            feed = feedparser.parse(feed_url)
+            articles = []
+            
+            # Get up to 5 most recent entries
+            for entry in feed.entries[:5]:
+                try:
+                    title = entry.get('title', '').strip()
+                    url = entry.get('link', '')
                     
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing TechCrunch article: {e}")
-                continue
-        
-        return articles
-
-    def _parse_mit_news(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse MIT News articles"""
-        articles = []
-        article_elements = soup.find_all('div', class_='views-row')[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h3') or element.find('h2')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    if url and not url.startswith('http'):
-                        url = f"https://news.mit.edu{url}"
+                    # Get published date
+                    published_date = datetime.now().isoformat()
+                    if hasattr(entry, 'published_parsed') and entry.published_parsed:
+                        published_date = datetime(*entry.published_parsed[:6]).isoformat()
+                    elif hasattr(entry, 'updated_parsed') and entry.updated_parsed:
+                        published_date = datetime(*entry.updated_parsed[:6]).isoformat()
                     
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing MIT News article: {e}")
-                continue
-        
-        return articles
-
-    def _parse_ai_news(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse AI News articles"""
-        articles = []
-        article_elements = soup.find_all('article')[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h2') or element.find('h1')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    if url and not url.startswith('http') and not url.startswith('//'):
-                        url = f"https://artificialintelligence-news.com{url}"
+                    # Get summary from RSS or extract from article
+                    summary = entry.get('summary', '') or entry.get('description', '')
                     
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing AI News article: {e}")
-                continue
-        
-        return articles
+                    if title and url:
+                        article = {
+                            'title': title,
+                            'url': url,
+                            'published_date': published_date,
+                            'source': source_name,
+                            'full_content': summary  # Use RSS summary initially
+                        }
+                        articles.append(article)
+                        
+                except Exception as e:
+                    logger.error(f"Error parsing RSS entry from {source_name}: {e}")
+                    continue
+            
+            # Optionally fetch full content for articles (commented out to avoid blocks)
+            # for article in articles[:3]:  # Only fetch first 3 to avoid rate limits
+            #     if article.get('url'):
+            #         full_content = self.get_website_text_content(article['url'])
+            #         if full_content:
+            #             article['full_content'] = full_content
+            
+            return articles
+            
+        except Exception as e:
+            logger.error(f"Error parsing RSS feed {source_name}: {e}")
+            return []
 
-    def _parse_mit_review(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse MIT Technology Review articles"""
-        articles = []
-        article_elements = soup.find_all('div', class_='content')[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h3') or element.find('h2')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    if url and not url.startswith('http'):
-                        url = f"https://www.technologyreview.com{url}"
-                    
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing MIT Review article: {e}")
-                continue
-        
-        return articles
-
-    def _parse_venturebeat(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse VentureBeat articles"""
-        articles = []
-        article_elements = soup.find_all('article')[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h2') or element.find('h3')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing VentureBeat article: {e}")
-                continue
-        
-        return articles
-
-    def _parse_wired(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse Wired articles"""
-        articles = []
-        article_elements = soup.find_all('div', attrs={'data-testid': 'SummaryItemWrapper'})[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h3') or element.find('h2')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    if url and not url.startswith('http'):
-                        url = f"https://www.wired.com{url}"
-                    
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing Wired article: {e}")
-                continue
-        
-        return articles
-
-    def _parse_forbes(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse Forbes articles"""
-        articles = []
-        article_elements = soup.find_all('article')[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h3') or element.find('h2')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    if url and not url.startswith('http'):
-                        url = f"https://www.forbes.com{url}"
-                    
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing Forbes article: {e}")
-                continue
-        
-        return articles
-
-    def _parse_openai_blog(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse OpenAI blog articles"""
-        articles = []
-        article_elements = soup.find_all('article')[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h3') or element.find('h2')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    if url and not url.startswith('http'):
-                        url = f"https://openai.com{url}"
-                    
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing OpenAI blog article: {e}")
-                continue
-        
-        return articles
-
-    def _parse_sciencedaily(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse ScienceDaily articles"""
-        articles = []
-        article_elements = soup.find_all('div', class_='latest')[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h3') or element.find('h2')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    if url and not url.startswith('http'):
-                        url = f"https://www.sciencedaily.com{url}"
-                    
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing ScienceDaily article: {e}")
-                continue
-        
-        return articles
-
-    def _parse_verge(self, soup: BeautifulSoup, base_url: str) -> List[Dict]:
-        """Parse The Verge articles"""
-        articles = []
-        article_elements = soup.find_all('div', class_='c-entry-box--compact')[:5]
-        
-        for element in article_elements:
-            try:
-                title_elem = element.find('h2') or element.find('h3')
-                link_elem = element.find('a')
-                
-                if title_elem and link_elem:
-                    title = title_elem.get_text().strip()
-                    url = link_elem.get('href')
-                    if url and not url.startswith('http'):
-                        url = f"https://www.theverge.com{url}"
-                    
-                    articles.append({
-                        'title': title,
-                        'url': url,
-                        'published_date': datetime.now().isoformat()
-                    })
-            except Exception as e:
-                logger.error(f"Error parsing Verge article: {e}")
-                continue
-        
-        return articles
-
-    def _filter_recent_articles(self, articles: List[Dict], hours: int = 24) -> List[Dict]:
+    def _filter_recent_articles(self, articles: List[Dict], hours: int = 168) -> List[Dict]:
         """Filter articles from the last N hours"""
         cutoff_time = datetime.now() - timedelta(hours=hours)
         recent_articles = []

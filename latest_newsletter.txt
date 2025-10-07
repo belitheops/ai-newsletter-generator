@@ -3,69 +3,365 @@ AI DAILY NEWSLETTER
 October 07, 2025
 ==================================================
 
-Today's AI & Technology Stories: 8
+Today's AI & Technology Stories: 45
 
 
-1. OpenAI Releases GPT-5 with Major Performance Improvements
-Category: AI Research | Impact: 7/10
-OpenAI has unveiled GPT-5, featuring significant advancements in large language models, including better reasoning, multimodal understanding, and factual accuracy. The model sets new standards in AI performance, with improvements in mathematical problem-solving, code generation, and complex reasoning, while introducing enhanced safety measures to reduce errors.
-Read more: https://example.com/gpt5-release
-
----
-
-
-2. MIT Researchers Develop Breakthrough AI Chip That Uses 90% Less Energy
-Category: AI Research | Impact: 7/10
-MIT researchers have created an innovative AI chip that dramatically reduces energy consumption by 90% compared to current GPU-based systems, leveraging neuromorphic computing principles akin to the human brain's functions. This advancement could facilitate the wider use of AI in battery-operated devices and significantly lower the environmental footprint of large AI systems by offering high-speed neural network processing with minimal power use.
-Read more: https://example.com/mit-ai-chip
+1. Deloitte goes all in on AI — despite having to issue a hefty refund for use of AI
+Category: AI Business | Impact: 7/10
+Deloitte is implementing its AI tool, Claude, across its global workforce of nearly 500,000 employees, despite recently having to issue a refund due to inaccuracies in a report caused by AI-generated content, referred to as 'AI hallucinations'. This move indicates Deloitte's strong commitment to integrating artificial intelligence into its operations and services.
+Read more: https://techcrunch.com/2025/10/06/deloitte-goes-all-in-on-ai-despite-having-to-issue-a-hefty-refund-for-use-of-ai/
 
 ---
 
 
-3. Google Announces Gemini 2.0 with Enhanced Multimodal Capabilities
+2. Taylor Swift fans accuse singer of using AI in her Google scavenger hunt videos
 Category: AI Products | Impact: 7/10
-Google has announced the release of Gemini 2.0, an advanced version of its multimodal AI model capable of processing and generating content across multiple formats including text, images, video, and audio. This new version introduces improved reasoning abilities and deep contextual understanding. It will be integrated into Google's suite of products and made available to developers via Google Cloud's AI platform.
-Read more: https://example.com/gemini-2
+Taylor Swift's fans, known as Swifties, expressed dissatisfaction upon suspecting the use of AI-generated content in a promotional scavenger hunt for the singer. The controversy highlights concerns and debates surrounding the authenticity of artist-generated content and the increasing use of AI in entertainment and promotional activities.
+Read more: https://techcrunch.com/2025/10/06/taylor-swift-fans-accuse-singer-of-using-ai-in-her-google-scavenger-hunt-videos/
 
 ---
 
 
-4. AI-Powered Drug Discovery Platform Identifies Potential Cancer Treatment
+3. OpenAI ramps up developer push with more powerful models in its API
+Category: AI Business | Impact: 7/10
+OpenAI is intensifying its efforts to attract developers by launching more powerful models through its API, along with a series of new tools and capabilities. These include an agent-building tool and new features that allow for the creation of apps within ChatGPT, enhancing OpenAI's platform with more functionalities and making it more appealing for developers.
+Read more: https://techcrunch.com/2025/10/06/openai-ramps-up-developer-push-with-more-powerful-models-in-its-api/
+
+---
+
+
+4. MrBeast says AI could threaten creators’ livelihoods, calling it ‘scary times’ for the industry
+Category: AI Business | Impact: 7/10
+Influential YouTuber MrBeast expressed concerns over AI posing a potential existential threat to content creators, highlighting a period of uncertainty within the industry. His comments underscore a growing apprehension among digital creators, especially those with smaller platforms, about AI's impact on their livelihoods and the future of content creation.
+Read more: https://techcrunch.com/2025/10/06/mrbeast-says-ai-could-threaten-creators-livelihoods-calling-it-scary-times-for-the-industry/
+
+---
+
+
+5. OpenAI launches AgentKit to help developers build and ship AI agents
+Category: AI Products | Impact: 7/10
+OpenAI has introduced AgentKit, a comprehensive toolkit designed for developers to ease the process of creating, deploying, and optimizing AI agents from initial prototypes to full production stages. Announced by Sam Altman during OpenAI's Dev Day, AgentKit aims to reduce the complexity and effort required in developing agent workflows.
+Read more: https://techcrunch.com/2025/10/06/openai-launches-agentkit-to-help-developers-build-and-ship-ai-agents/
+
+---
+
+
+6. New prediction model could improve the reliability of fusion power plants
+Category: Machine Learning | Impact: 7/10
+A novel prediction model has been developed to enhance the reliability of fusion power plants by leveraging a combination of physics insights and machine learning techniques. This model specifically targets the prevention of harmful disruptions during the shutdown processes of tokamak fusion reactors, offering a promising pathway to safer and more reliable fusion energy production.
+Read more: https://news.mit.edu/2025/new-prediction-model-could-improve-reliability-fusion-power-plants-1007
+
+---
+
+
+7. Printable aluminum alloy sets strength records, may enable lighter aircraft parts
+Category: Machine Learning | Impact: 7/10
+MIT engineers have innovated a technique using machine learning to 3D print aluminum alloys that significantly surpass the strength of those produced by traditional methods. This advancement could lead to the creation of lighter, more efficient aircraft parts, marking a milestone in material science and additive manufacturing technology.
+Read more: https://news.mit.edu/2025/printable-aluminum-alloy-sets-strength-records-may-enable-lighter-aircraft-parts-1007
+
+---
+
+
+8. AI maps how a new antibiotic targets gut bacteria
 Category: AI Research | Impact: 7/10
-An AI-powered drug discovery platform has led to the identification of a new compound that shows promise in treating aggressive cancers, marking a significant advancement in pharmaceutical research. This technology has the potential to drastically cut down the traditional drug development timeline, with early clinical trials already displaying promising results and minimal side effects.
-Read more: https://example.com/ai-drug-discovery
+Researchers from MIT CSAIL and McMaster University have leveraged a generative AI model to understand how a new antibiotic precisely targets and combats disease-causing bacteria in the gut. This innovative AI application significantly accelerates a traditionally years-long process, promising faster development and deployment of targeted antibiotics.
+Read more: https://news.mit.edu/2025/ai-maps-how-new-antibiotic-targets-gut-bacteria-1003
 
 ---
 
 
-5. Major Tech Companies Form Alliance for Responsible AI Development
+9. Martin Trust Center for MIT Entrepreneurship welcomes Ana Bakshi as new executive director
+Category: Tech Industry | Impact: 7/10
+Ana Bakshi has been appointed as the new executive director of the Martin Trust Center for MIT Entrepreneurship, where she will play a pivotal role in enhancing and expanding the center's educational programs and platforms that focus on entrepreneurship at MIT. This strategic hire aims to further position the center as a leading global hub for entrepreneurial education.
+Read more: https://news.mit.edu/2025/martin-trust-center-mit-entrepreneurship-ana-bakshi-executive-director-1002
+
+---
+
+
+10. Lincoln Lab unveils the most powerful AI supercomputer at any US university
+Category: AI Research | Impact: 7/10
+Lincoln Lab has introduced TX-GAIN, the most powerful AI supercomputer at any US university, specifically optimized for generative AI applications. This new computational resource is set to advance research and development efforts in various fields, including biodefense, material discovery, and cybersecurity, showcasing a significant leap in university-level AI capabilities.
+Read more: https://news.mit.edu/2025/lincoln-lab-unveils-most-powerful-ai-supercomputer-at-any-us-university-1002
+
+---
+
+
+11. IBM claims 45% productivity gains with Project Bob, its multi-model IDE that orchestrates LLMs with full repository context
+Category: AI Products | Impact: 7/10
+IBM introduces Project Bob, an AI-first Integrated Development Environment (IDE) aimed at modernizing applications by orchestrating multiple Large Language Models (LLMs) to increase developer productivity by 45%. Announced at the TechXchange 2025 conference, the tool is part of IBM's strategy to address enterprise AI challenges, including legacy code modernization, AI agent governance in production, and smoothing the prototype-to-production transition.
+Read more: https://venturebeat.com/ai/ibm-claims-45-productivity-gains-with-project-bob-its-multi-model-ide-that
+
+---
+
+
+12. OpenAI unveils AgentKit that lets developers drag and drop to build AI agents
+Category: AI Products | Impact: 7/10
+OpenAI introduced AgentKit, a toolkit designed to simplify the development of AI agents by providing a drag-and-drop interface for developers. This toolkit is part of OpenAI's strategy to become a full-stack application provider, offering features like an Agent Builder for creating and managing multi-agent workflows, a Connector Registry, and ChatKit for integrating chat capabilities into user interfaces. AgentKit aims to streamline agent creation and deployment, reducing the reliance on fragmented tools and external platforms.
+Read more: https://venturebeat.com/ai/openai-unveils-agentkit-that-lets-developers-drag-and-drop-to-build-ai
+
+---
+
+
+13. OpenAI announces Apps SDK allowing ChatGPT to launch and run third party apps like Zillow, Canva, Spotify
+Category: AI Products | Impact: 7/10
+OpenAI's CEO Sam Altman announced the launch of an Apps SDK during DevDay, enabling the integration of third-party applications like Zillow, Canva, and Spotify within ChatGPT. This new feature supports both free and paid applications, transforming ChatGPT into a platform where users can interact with various apps without leaving the chatbot interface. The Apps SDK, built on the Model Context Protocol (MCP), is set to revolutionize app interaction by allowing ChatGPT to perform tasks and retrieve information across integrated services.
+Read more: https://venturebeat.com/ai/openai-announces-apps-sdk-allowing-chatgpt-to-launch-and-run-third-party
+
+---
+
+
+14. From Silicon Valley to Nairobi: What the Global South’s AI leapfrogging teaches tech leaders
 Category: AI Policy | Impact: 7/10
-Microsoft, Meta, and IBM have collaborated to form an alliance aimed at promoting responsible AI development. This coalition intends to set industry standards for AI's safety, transparency, and ethical application, while also engaging with policymakers on AI regulation. This initiative underscores the increasing emphasis on a unified strategy for managing AI governance.
-Read more: https://example.com/ai-alliance
+The article explores the differential impact and perception of AI between the Global North, particularly the U.S., and the Global South, highlighting the latter's more optimistic view of AI as a leapfrogging opportunity into new opportunities. While in the West, AI is often seen as a threat to jobs, in countries like India, Indonesia, and Nigeria, it is viewed as a chance to improve sectors such as education and healthcare, underlining a divide in how AI's potential is seen across different parts of the world.
+Read more: https://venturebeat.com/ai/from-silicon-valley-to-nairobi-what-the-global-souths-ai-leapfrogging
 
 ---
 
 
-6. Anthropic Introduces Claude 3 with Advanced Reasoning Features
+15. Replacing coders with AI? Why Bill Gates, Sam Altman and experience say you shouldn’t
+Category: AI Business | Impact: 7/10
+The push towards automating coding jobs with AI, advocated by tech advancements, confronts skepticism from professionals and industry leaders like Bill Gates and Sam Altman. Despite AI's promise, experts argue that replacing human programmers is still a distant reality, as AI lacks the ability to reason and access the sophisticated, proprietary code that underpins major companies. This gap highlights the complexities and limitations of current generative AI models when tasked with tasks beyond mimicking patterns or managing simple, routine coding.
+Read more: https://venturebeat.com/ai/replacing-coders-with-ai-why-bill-gates-sam-altman-and-experience-say-you
+
+---
+
+
+16. The Future of AI Filmmaking Is a Parody of the Apocalypse, Made by a Guy Named Josh
+Category: AI Products | Impact: 7/10
+The article introduces Neural Viz as the pioneering cinematic universe in the AI era, brought to life by an individual known as Josh. This endeavor represents a significant milestone in AI filmmaking, showcasing a parody of the apocalypse and marking a groundbreaking shift in how movies might be conceptualized, produced, and perceived in the future.
+Read more: https://www.wired.com/story/the-future-of-ai-media-parody-of-the-apocalypse-guy-named-josh/
+
+---
+
+
+17. Jony Ive Says He Wants His OpenAI Devices to ‘Make Us Happy’
+Category: AI Products | Impact: 7/10
+At the OpenAI developer conference in San Francisco, Jony Ive, the former Apple designer, expressed his desire for OpenAI devices to contribute positively to our well-being, acknowledging the current complex relationship people have with technology. Ive aims for these AI devices to 'make us happy,' indicating a focus on human-centered design in AI technology development.
+Read more: https://www.wired.com/story/sam-altman-and-jony-ives-ai-device-dev-day/
+
+---
+
+
+18. OpenAI Wants ChatGPT to Be Your Future Operating System
+Category: AI Products | Impact: 7/10
+During OpenAI’s Developer Day, CEO Sam Altman introduced applications that function entirely within the chat interface of ChatGPT, marking a strategic move to evolve ChatGPT into a more versatile platform. This development signifies an ambitious step towards integrating AI-driven capabilities directly into user interfaces, potentially transforming how users engage with software applications.
+Read more: https://www.wired.com/story/openai-dev-day-sam-altman-chatgpt-apps/
+
+---
+
+
+19. OpenAI's Blockbuster AMD Deal Is a Bet on Near-Limitless Demand for AI
+Category: AI Business | Impact: 7/10
+OpenAI's partnership with AMD to build extensive data centers in the US signifies a strong belief in the continuous surge of AI demand, contrary to the skepticism about a potential bubble. This strategic move underscores OpenAI's commitment to securing robust computational resources needed to fuel AI advancements and applications.
+Read more: https://www.wired.com/story/openai-amd-deal-data-center-chips/
+
+---
+
+
+20. WIRED Roundup: The New Fake World of OpenAI’s Social Video App
+Category: AI Products | Impact: 7/10
+In the latest episode of Uncanny Valley, WIRED discusses a range of topics from Peter Thiel's unique preoccupations to the significant launch of OpenAI's Sora 2 video app. This roundup showcases the diversity in technology news, with a particular highlight on OpenAI's venture into social video applications, illustrating the continuous expansion and innovation in AI technologies.
+Read more: https://www.wired.com/story/uncanny-valley-podcast-wired-roundup-the-new-fake-world-of-openais-social-video-app/
+
+---
+
+
+21. These little robots literally walk on water
+Category: Robotics | Impact: 7/10
+HydroSpread, a pioneering fabrication method, has enabled the creation of ultrathin soft robots that can walk on water. Inspired by insects, these miniature robots could herald significant advances in robotics, along with novel applications in healthcare and environmental monitoring, by leveraging their unique ability to operate on water surfaces.
+Read more: https://www.sciencedaily.com/releases/2025/10/251003033930.htm
+
+---
+
+
+22. Quantum chips just proved they’re ready for the real world
+Category: Tech Industry | Impact: 7/10
+Diraq has achieved a significant milestone in quantum computing by demonstrating that its silicon-based quantum chips can maintain over 99% fidelity in two-qubit operations during mass production in semiconductor foundries. This accomplishment suggests that quantum processors can be built cost-effectively and at scale, leveraging existing semiconductor manufacturing processes, thereby paving the way for the practical deployment of quantum computing technologies.
+Read more: https://www.sciencedaily.com/releases/2025/09/250927031230.htm
+
+---
+
+
+23. Caltech’s massive 6,100-qubit array brings the quantum future closer
 Category: AI Research | Impact: 7/10
-Anthropic has unveiled Claude 3, an advanced artificial intelligence model with enhanced reasoning capabilities. This iteration is distinguished by its ability to handle complex tasks such as mathematical proofs and strategic planning, and it incorporates a Constitutional AI framework for ethically aligned outputs. Claude 3 surpasses its competitors in performance for tasks requiring deep understanding and is accessible through Anthropic's API and partnerships.
-Read more: https://example.com/claude-3
+Caltech researchers have created a groundbreaking 6,100-quantum bit (qubit) array, marking a significant advancement in the development of quantum computing. These qubits, which achieve long-lasting superpositions and high accuracy, represent a step forward in constructing error-corrected, powerful quantum computers capable of true quantum computation through qubit entanglement.
+Read more: https://www.sciencedaily.com/releases/2025/09/250925025341.htm
 
 ---
 
 
-7. OpenAI Unveils GPT-5: Next Generation Language Model
+24. AI-powered smart bandage heals wounds 25% faster
+Category: AI Products | Impact: 7/10
+The introduction of a-Heal, an AI-powered smart bandage, marks significant progress in medical technology, enhancing wound healing efficiency by 25% compared to conventional methods. By integrating AI, imaging, and bioelectronics, this wearable device monitors wounds in real-time, diagnoses healing stages, and administers personalized treatments such as medication or electric fields, offering a revolutionary approach to managing chronic wounds.
+Read more: https://www.sciencedaily.com/releases/2025/09/250924012232.htm
+
+---
+
+
+25. Scientists just made atoms talk to each other inside silicon chips
 Category: AI Research | Impact: 7/10
-OpenAI has launched GPT-5, heralding it as their most sophisticated language model yet, with substantial advancements in understanding and generating human-like text. This iteration boasts improved reasoning abilities, enhanced coding and multimodal functions, along with advanced safety and reduced bias features. The deployment of GPT-5 is already being heralded for boosting productivity in areas such as software development, content creation, and data analysis.
-Read more: https://example.com/openai-gpt5
+Researchers at the University of New South Wales (UNSW) have achieved a significant breakthrough in quantum computing by enabling atomic nuclei to communicate through electrons within silicon chips, a common material in today's computer technology. This advancement facilitates entanglement, a crucial quantum computing phenomenon, on scales compatible with current semiconductor technology, pushing scalable, silicon-based quantum computing towards practical realization.
+Read more: https://www.sciencedaily.com/releases/2025/09/250920214318.htm
 
 ---
 
 
-8. EU Passes Comprehensive AI Regulation Framework
+26. Sam Altman says there are no current plans for ads within ChatGPT Pulse — but he’s not ruling it out
+Category: AI Products | Impact: 7/10
+During a Q&A session at OpenAI's DevDay in San Francisco, CEO Sam Altman expressed high regard for the recently introduced ChatGPT Pulse, highlighting it as a significant feature addition to ChatGPT. While there are no current plans to include advertisements within ChatGPT Pulse, Altman did not dismiss the possibility for the future. ChatGPT Pulse is a personalization feature that allows ChatGPT to learn, enhancing user interaction.
+Read more: https://www.theverge.com/news/793073/chatgpt-pulse-no-plans-for-ads-sam-altman
+
+---
+
+
+27. ChatGPT apps are live: Here are the first ones you can try
+Category: AI Products | Impact: 7/10
+OpenAI has integrated new features into ChatGPT, allowing it to directly control and interact with other applications such as Spotify and Zillow from within the chat interface. This innovation enables users to perform tasks like creating music playlists or searching for real estate listings without exiting ChatGPT, reminiscent of the embedded 'mini' apps found in platforms like Telegram and Discord.
+Read more: https://www.theverge.com/news/793081/chagpt-apps-sdk-spotify-zillow-openai
+
+---
+
+
+28. Google&#8217;s AI bounty program pays bug hunters up to $30K
+Category: AI Products | Impact: 7/10
+Google has introduced a new reward initiative aimed at identifying bugs within its AI products, offering up to $30,000 to individuals who discover significant vulnerabilities. This program targets specific types of flaws, such as those that could lead to unauthorized actions like unlocking a door or summarizing confidential data through AI prompt injections.
+Read more: https://www.theverge.com/news/793362/google-ai-security-vulnerability-rewards
+
+---
+
+
+29. OpenAI will let developers build apps that work inside ChatGPT
+Category: AI Products | Impact: 7/10
+OpenAI is enhancing ChatGPT by enabling it to integrate with third-party apps directly through a new ChatGPT SDK. This upgrade allows software and services to connect with ChatGPT, facilitating users to employ these apps within ChatGPT to accomplish various tasks, with the AI providing context and advice. Demonstrations of this feature provided examples of its practical applications.
+Read more: https://www.theverge.com/news/793039/openai-chatgpt-apps-developers-sdk-canva-zillow-devday-2025
+
+---
+
+
+30. All of the updates from OpenAI DevDay 2025
+Category: AI Business | Impact: 7/10
+OpenAI's DevDay 2025 brought to light various updates since ChatGPT's launch in 2022, touching on controversies surrounding CEO Sam Altman, chatbot safety, the environmental impact of AI data centers, and a feud with Elon Musk. Moreover, the event also discussed product enhancements, specifically mentioning the glazing levels for GPT-5, indicating continuous innovation and the addressing of broader concerns in the AI field.
+Read more: https://www.theverge.com/news/640086/openai-chat-gpt-news-updates
+
+---
+
+
+31. How AI is changing the way we travel
+Category: AI Business | Impact: 7/10
+Artificial Intelligence (AI) is revolutionizing the travel industry by personalizing and streamlining the journey planning and experience process. With tools capable of creating bespoke travel itineraries in moments and providing personalized content recommendations, AI is enhancing how individuals envision, organize, and enjoy their travels. However, this innovation also prompts a critical debate about whether AI empowers travelers with choices or subtly influences their decisions.
+Read more: https://www.artificialintelligence-news.com/news/how-ai-is-changing-the-way-we-travel/
+
+---
+
+
+32. Google’s new AI agent rewrites code to automate vulnerability fixes
+Category: AI Products | Impact: 7/10
+Google DeepMind has launched CodeMender, an AI agent that autonomously detects and fixes security vulnerabilities in software code. In the past six months, CodeMender has successfully patched 72 security issues in various open-source projects, showcasing its ability to ease the arduous process of identifying and repairing software vulnerabilities.
+Read more: https://www.artificialintelligence-news.com/news/google-new-ai-agent-rewrites-code-automate-vulnerability-fixes/
+
+---
+
+
+33. China Mobile Shanghai launches industry-first 5G-A network monetisation strategy with Huawei
+Category: Tech Industry | Impact: 7/10
+On September 21, 2025, during a football match at Shanghai Stadium, China Mobile Shanghai, in partnership with Huawei, unveiled an industry-first 5G-A network monetisation strategy. This event, attended by 80,000 fans, served as a live demonstration for telecom carriers on how to transform advanced network capabilities into profitable revenue streams.
+Read more: https://www.artificialintelligence-news.com/news/5g-a-shanghai-huawei-network-monetization-football/
+
+---
+
+
+34. AI causes reduction in users’ brain activity – MIT
+Category: AI Research | Impact: 7/10
+A study conducted by MIT revealed that using AI, specifically Large Language Models (LLM), leads to a reduction in brain activity. This effect not only occurs during the use of AI but also negatively impacts mental activity in subsequent tasks. The research, though based on a limited sample size, suggests significant implications for users' cognitive functions when interacting with AI technologies.
+Read more: https://www.artificialintelligence-news.com/news/ai-causes-reduction-in-users-brain-activity-mit/
+
+---
+
+
+35. The 5 best AI AppSec tools in 2025
+Category: AI Products | Impact: 7/10
+In a recent article by Or Hillel for Green Lamp, the emphasis was placed on the pivotal role that applications play in today's digital economy, underlining their critical function in service delivery, customer engagement, and operational management for organizations. It highlighted how this centrality also makes applications a major target for security attacks, showcasing the top 5 AI-driven Application Security (AppSec) tools in 2025 as key solutions to protect these digital assets effectively.
+Read more: https://www.artificialintelligence-news.com/news/the-5-best-ai-appsec-tools-in-2025/
+
+---
+
+
+36. The three big unanswered questions about Sora
+Category: AI Products | Impact: 7/10
+OpenAI recently launched Sora, a novel TikTok-inspired application featuring an infinite stream of AI-generated short videos. This app introduces the innovative capability for users to create hyperrealistic avatars, or 'cameos', that replicate their appearance and voice, allowing these avatars to be featured in videos subject to user-defined permissions.
+Read more: https://www.technologyreview.com/2025/10/07/1124998/the-three-big-unanswered-questions-about-sora/
+
+---
+
+
+37. Enabling real-time responsiveness with event-driven architecture
+Category: Tech Industry | Impact: 7/10
+The article discusses the benefits and implementation of event-driven architecture (EDA) in achieving real-time responsiveness in systems. EDA allows systems to process events seamlessly and instantaneously, enhancing the efficiency and reactivity of applications in various sectors, including finance, healthcare, and retail. By adopting EDA, organizations can significantly improve their operational agility and customer experience.
+Read more: https://www.technologyreview.com/2025/10/06/1124323/enabling-real-time-responsiveness-with-event-driven-architecture/
+
+---
+
+
+38. Unlocking AI’s full potential requires operational excellence
+Category: AI Business | Impact: 7/10
+The article highlights the disparity between the widespread discussion of AI's potential within corporate environments and the actual application of generative AI technologies, noting that despite the high frequency of AI mentions in S&P 500 companies' earnings calls, only a small fraction of AI pilots are moving beyond the experimental stage. This discrepancy underscores the need for operational excellence to truly unlock AI's capabilities.
+Read more: https://www.technologyreview.com/2025/10/01/1124593/unlocking-ais-full-potential-requires-operational-excellence/
+
+---
+
+
+39. OpenAI is huge in India. Its models are steeped in caste bias.
 Category: AI Policy | Impact: 7/10
-The European Union has enacted a groundbreaking AI regulation framework that categorizes AI systems based on their risk level and mandates compliance requirements to mitigate potential harms. High-risk AI technologies are subject to stringent measures, including transparency, human oversight, and audits, with the legislation aiming to foster innovation while safeguarding fundamental rights. Entities have a two-year window to adapt to these regulations, setting a potential precedent for AI governance globally.
-Read more: https://example.com/eu-ai-regulation
+In Bengaluru, India, Dhiraj Singha utilized ChatGPT for refining his English in a postdoctoral sociology fellowship application, only to find the AI changing his surname to 'Sharma,' revealing a caste bias embedded in OpenAI's models. This incident underscores the broader issue of AI systems propagating social biases, highlighting a significant concern in their societal application and development.
+Read more: https://www.technologyreview.com/2025/10/01/1124621/openai-india-caste-bias/
+
+---
+
+
+40. The US may be heading toward a drone-filled future
+Category: Robotics | Impact: 7/10
+The article discusses the shift towards a future where drones are commonly used by the private sector for surveillance purposes, highlighting Flock Safety's initiative in selling drones for tracking shoplifters. As explained by Keith Kauffman, a former police chief and current leader of Flock’s drone efforts, an example scenario involves deploying a drone from a retail establishment like Home Depot to follow suspected shoplifters, showcasing the expanding role of drones beyond traditional surveillance applications.
+Read more: https://www.technologyreview.com/2025/09/30/1124470/the-us-may-be-heading-toward-a-drone-filled-future/
+
+---
+
+
+41. Disrupting malicious uses of AI: October 2025
+Category: AI Policy | Impact: 7/10
+In its October 2025 report, OpenAI reveals its latest efforts in detecting and mitigating the malicious uses of AI technology. The organization outlines its strategies for countering misuse, including the enforcement of policies and the implementation of protective measures to safeguard users against real-world harms.
+Read more: https://openai.com/global-affairs/disrupting-malicious-uses-of-ai-october-2025
+
+---
+
+
+42. Codex is now generally available
+Category: AI Products | Impact: 7/10
+OpenAI has announced that Codex, their AI platform, is now broadly available, introducing enhancements including a Slack integration, a software development kit (SDK), and admin tools for usage monitoring and workspace management. These additions are designed to simplify the deployment and administration of Codex for developers at scale.
+Read more: https://openai.com/index/codex-now-generally-available
+
+---
+
+
+43. Introducing apps in ChatGPT and the new Apps SDK
+Category: AI Products | Impact: 7/10
+ChatGPT is expanding its capabilities with the introduction of chat-enabled apps, allowing users to interact with a variety of applications directly within ChatGPT. Available in preview, developers now have access to a new Apps SDK to start building these integrations. This development represents a significant enhancement in the functionality and versatility of ChatGPT, offering a more interactive and integrated user experience.
+Read more: https://openai.com/index/introducing-apps-in-chatgpt
+
+---
+
+
+44. AMD and OpenAI announce strategic partnership to deploy 6 gigawatts of AMD GPUs
+Category: AI Business | Impact: 7/10
+AMD and OpenAI have entered a strategic multi-year partnership to utilize 6 gigawatts of AMD Instinct GPUs for OpenAI’s future AI projects, with an initial deployment of 1 gigawatt expected in 2026. This collaboration aims to bolster global AI innovation and enhance OpenAI's AI infrastructure capabilities.
+Read more: https://openai.com/index/openai-amd-strategic-partnership
+
+---
+
+
+45. Introducing AgentKit, new Evals, and RFT for agents
+Category: AI Products | Impact: 7/10
+A set of new development tools, including AgentKit, expanded evals capabilities, and reinforcement fine-tuning (RFT) for agents, has been released to accelerate the process of moving from prototype to production for developers. These tools aim to simplify and enhance the development of AI agents by providing more robust testing and optimization features.
+Read more: https://openai.com/index/introducing-agentkit
 
 ---
 
