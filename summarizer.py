@@ -12,8 +12,9 @@ class ArticleSummarizer:
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
             logger.warning("OPENAI_API_KEY not found in environment variables")
-        
-        self.client = OpenAI(api_key=api_key)
+            self.client = None
+        else:
+            self.client = OpenAI(api_key=api_key)
         
         # the newest OpenAI model is "gpt-5" which was released August 7, 2025.
         # do not change this unless explicitly requested by the user
@@ -58,6 +59,10 @@ class ArticleSummarizer:
 
     def _generate_summary(self, text: str, source: str) -> Dict:
         """Generate summary using OpenAI API"""
+        if not self.client:
+            logger.error("OpenAI client not initialized - API key missing")
+            raise ValueError("OpenAI API key not configured")
+            
         try:
             prompt = f"""
             Please analyze the following AI/technology news article and provide a comprehensive summary.
