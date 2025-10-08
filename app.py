@@ -105,30 +105,30 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
     try:
         # Step 1: Scrape articles
         status_text.text("🔍 Scraping articles from 10 AI/tech news sources...")
-        progress_bar.progress(10)
+        progress_bar.progress(0.10)
         articles = scraper.scrape_all_sources()
         st.success(f"✅ Scraped {len(articles)} articles")
         
         # Step 2: Deduplicate stories
         status_text.text("🔄 Deduplicating and consolidating stories...")
-        progress_bar.progress(30)
+        progress_bar.progress(0.30)
         unique_stories = deduplicator.deduplicate_stories(articles)
         st.success(f"✅ Consolidated to {len(unique_stories)} unique stories")
         
         # Step 3: Summarize articles
         status_text.text("📝 Summarizing articles with OpenAI...")
-        progress_bar.progress(50)
+        progress_bar.progress(0.50)
         summaries = []
         for i, story in enumerate(unique_stories):
             summary = summarizer.summarize_story(story)
             summaries.append(summary)
-            progress_bar.progress(50 + (i + 1) / len(unique_stories) * 25)
+            progress_bar.progress(0.50 + (i + 1) / len(unique_stories) * 0.25)
         
         st.success(f"✅ Generated {len(summaries)} summaries")
         
         # Step 3.5: Select top 12 stories by impact score
         status_text.text("🎯 Selecting top stories by impact...")
-        progress_bar.progress(80)
+        progress_bar.progress(0.80)
         MAX_STORIES = 12
         if len(summaries) > MAX_STORIES:
             sorted_summaries = sorted(summaries, key=lambda x: x.get('impact_score', 0), reverse=True)
@@ -139,7 +139,7 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         
         # Step 4: Generate newsletter
         status_text.text("📄 Generating newsletter HTML...")
-        progress_bar.progress(85)
+        progress_bar.progress(0.85)
         newsletter_html = newsletter_gen.generate_newsletter(top_summaries)
         
         # Step 5: Save to database
@@ -153,7 +153,7 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         
         # Step 6: Send email
         status_text.text("📧 Sending email via SendFox...")
-        progress_bar.progress(95)
+        progress_bar.progress(0.95)
         email_sent = sendfox.send_newsletter(newsletter_html, newsletter_data['title'])
         
         if email_sent:
@@ -162,7 +162,7 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         else:
             st.warning("⚠️ Newsletter generated but email sending failed")
         
-        progress_bar.progress(100)
+        progress_bar.progress(1.0)
         status_text.text("✅ Newsletter generation complete!")
         
         # Display the newsletter
