@@ -167,6 +167,18 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         
         # Display the newsletter
         st.subheader("📰 Generated Newsletter")
+        
+        # Add export button
+        col1, col2 = st.columns([1, 4])
+        with col1:
+            st.download_button(
+                label="📥 Export HTML",
+                data=newsletter_html,
+                file_name=f"newsletter_{datetime.now().strftime('%Y%m%d')}.html",
+                mime="text/html",
+                help="Download the newsletter as a standalone HTML file"
+            )
+        
         st.components.v1.html(newsletter_html, height=600, scrolling=True)
         
     except Exception as e:
@@ -194,8 +206,20 @@ def show_newsletter_archive(db):
             with col3:
                 st.metric("Created", newsletter['created_at'][:16])
             
-            if st.button(f"View Full Newsletter", key=f"view_{newsletter['id']}"):
-                st.components.v1.html(newsletter['html_content'], height=600, scrolling=True)
+            # Action buttons
+            col_a, col_b = st.columns(2)
+            with col_a:
+                if st.button(f"👁️ View", key=f"view_{newsletter['id']}"):
+                    st.components.v1.html(newsletter['html_content'], height=600, scrolling=True)
+            with col_b:
+                st.download_button(
+                    label="📥 Export HTML",
+                    data=newsletter['html_content'],
+                    file_name=f"newsletter_{newsletter['created_at'][:10]}.html",
+                    mime="text/html",
+                    key=f"download_{newsletter['id']}",
+                    help="Download this newsletter as HTML"
+                )
 
 def show_configuration():
     st.header("⚙️ Configuration")

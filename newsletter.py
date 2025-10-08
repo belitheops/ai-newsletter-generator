@@ -170,6 +170,24 @@ class NewsletterGenerator:
                 font-size: 0.75em;
                 font-weight: bold;
             }
+            .category-section {
+                margin-bottom: 40px;
+            }
+            .category-header {
+                font-size: 1.8em;
+                color: #333;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+                border-bottom: 3px solid #667eea;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .category-count {
+                font-size: 0.6em;
+                color: #888;
+                font-weight: normal;
+            }
             @media (max-width: 600px) {
                 body {
                     padding: 10px;
@@ -293,14 +311,68 @@ class NewsletterGenerator:
         """
 
     def _generate_stories_html(self, stories: List[Dict]) -> str:
-        """Generate HTML for all stories"""
-        stories_html = ""
+        """Generate HTML for all stories, grouped by category"""
+        # Group stories by category
+        from collections import defaultdict
+        categories = defaultdict(list)
         
         for story in stories:
-            story_html = self._generate_story_html(story)
-            stories_html += story_html
+            category = story.get('category', 'Other')
+            # Coerce to string and normalize to "Other" for resilience
+            category = str(category).strip() if category else 'Other'
+            if not category:
+                category = 'Other'
+            categories[category].append(story)
+        
+        # Define preferred category order (most important first)
+        preferred_order = [
+            'AI Policy', 'AI Business', 'AI Research', 'AI Products', 
+            'Machine Learning', 'Robotics', 'Tech Industry'
+        ]
+        
+        # Collect all categories: preferred order first, then remaining categories alphabetically, then 'Other' last
+        remaining_categories = sorted([cat for cat in categories.keys() 
+                                      if cat not in preferred_order and cat != 'Other'])
+        all_categories = preferred_order + remaining_categories
+        if 'Other' in categories:
+            all_categories.append('Other')
+        
+        stories_html = ""
+        
+        # Generate stories grouped by category
+        for category in all_categories:
+            if category in categories and categories[category]:
+                # Add category section header
+                stories_html += f"""
+                <div class="category-section">
+                    <h2 class="category-header">
+                        {self._get_category_icon(category)} {category}
+                        <span class="category-count">({len(categories[category])} stories)</span>
+                    </h2>
+                """
+                
+                # Add stories in this category
+                for story in categories[category]:
+                    story_html = self._generate_story_html(story)
+                    stories_html += story_html
+                
+                stories_html += "</div>"
         
         return stories_html
+    
+    def _get_category_icon(self, category: str) -> str:
+        """Get emoji icon for category"""
+        icons = {
+            'AI Policy': '⚖️',
+            'AI Business': '💼',
+            'AI Research': '🔬',
+            'AI Products': '🚀',
+            'Machine Learning': '🤖',
+            'Robotics': '🦾',
+            'Tech Industry': '💻',
+            'Other': '📰'
+        }
+        return icons.get(category, '📰')
 
     def _generate_story_html(self, story: Dict) -> str:
         """Generate HTML for a single story"""
