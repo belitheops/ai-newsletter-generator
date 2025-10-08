@@ -16,7 +16,7 @@ import json
 @st.cache_resource
 def initialize_components():
     scraper = NewsScraper()
-    deduplicator = StoryDeduplicator()
+    deduplicator = StoryDeduplicator(similarity_threshold=0.6)
     summarizer = ArticleSummarizer()
     newsletter_gen = NewsletterGenerator()
     sendfox = SendFoxClient()
