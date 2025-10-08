@@ -136,9 +136,9 @@ class NewsScraper:
         if failed_sources:
             logger.warning(f"Failed sources: {', '.join(failed_sources)}")
         
-        # Filter articles from last 7 days (increased from 24h for better results)
-        recent_articles = self._filter_recent_articles(all_articles, hours=168)
-        logger.info(f"Recent articles (7 days): {len(recent_articles)}")
+        # Filter articles from last 48 hours for fresher content
+        recent_articles = self._filter_recent_articles(all_articles, hours=48)
+        logger.info(f"Recent articles (48h): {len(recent_articles)}")
         
         return recent_articles
 
@@ -203,7 +203,7 @@ class NewsScraper:
             logger.error(f"Error parsing RSS feed {source_name}: {e}")
             return []
 
-    def _filter_recent_articles(self, articles: List[Dict], hours: int = 168) -> List[Dict]:
+    def _filter_recent_articles(self, articles: List[Dict], hours: int = 48) -> List[Dict]:
         """Filter articles from the last N hours"""
         cutoff_time = datetime.now() - timedelta(hours=hours)
         recent_articles = []

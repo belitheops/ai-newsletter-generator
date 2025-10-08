@@ -122,20 +122,31 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         for i, story in enumerate(unique_stories):
             summary = summarizer.summarize_story(story)
             summaries.append(summary)
-            progress_bar.progress(50 + (i + 1) / len(unique_stories) * 30)
+            progress_bar.progress(50 + (i + 1) / len(unique_stories) * 25)
         
         st.success(f"✅ Generated {len(summaries)} summaries")
+        
+        # Step 3.5: Select top 12 stories by impact score
+        status_text.text("🎯 Selecting top stories by impact...")
+        progress_bar.progress(80)
+        MAX_STORIES = 12
+        if len(summaries) > MAX_STORIES:
+            sorted_summaries = sorted(summaries, key=lambda x: x.get('impact_score', 0), reverse=True)
+            top_summaries = sorted_summaries[:MAX_STORIES]
+            st.info(f"📊 Selected top {MAX_STORIES} stories from {len(summaries)} (by impact score)")
+        else:
+            top_summaries = summaries
         
         # Step 4: Generate newsletter
         status_text.text("📄 Generating newsletter HTML...")
         progress_bar.progress(85)
-        newsletter_html = newsletter_gen.generate_newsletter(summaries)
+        newsletter_html = newsletter_gen.generate_newsletter(top_summaries)
         
         # Step 5: Save to database
         newsletter_data = {
             'title': f"AI Newsletter - {datetime.now().strftime('%B %d, %Y')}",
             'html_content': newsletter_html,
-            'story_count': len(summaries),
+            'story_count': len(top_summaries),
             'created_at': datetime.now().isoformat()
         }
         newsletter_id = db.save_newsletter(newsletter_data)

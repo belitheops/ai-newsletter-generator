@@ -98,15 +98,24 @@ class NewsletterScheduler:
             
             logger.info(f"Generated {len(summaries)} summaries")
             
+            # Step 3.5: Select top 12 stories by impact score
+            MAX_STORIES = 12
+            if len(summaries) > MAX_STORIES:
+                sorted_summaries = sorted(summaries, key=lambda x: x.get('impact_score', 0), reverse=True)
+                top_summaries = sorted_summaries[:MAX_STORIES]
+                logger.info(f"Selected top {MAX_STORIES} stories from {len(summaries)} by impact score")
+            else:
+                top_summaries = summaries
+            
             # Step 4: Generate newsletter
             logger.info("Generating newsletter HTML...")
-            newsletter_html = self.newsletter_gen.generate_newsletter(summaries)
+            newsletter_html = self.newsletter_gen.generate_newsletter(top_summaries)
             
             # Step 5: Save to database
             newsletter_data = {
                 'title': f"AI Daily Newsletter - {datetime.now().strftime('%B %d, %Y')}",
                 'html_content': newsletter_html,
-                'story_count': len(summaries),
+                'story_count': len(top_summaries),
                 'created_at': datetime.now().isoformat(),
                 'generation_method': 'scheduled'
             }

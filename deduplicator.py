@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class StoryDeduplicator:
-    def __init__(self, similarity_threshold: float = 0.7):
+    def __init__(self, similarity_threshold: float = 0.6):
         self.similarity_threshold = similarity_threshold
         self.vectorizer = TfidfVectorizer(
             max_features=1000,
