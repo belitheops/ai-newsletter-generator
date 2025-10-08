@@ -35,14 +35,17 @@ Preferred communication style: Simple, everyday language.
 **AI Summarization** (`summarizer.py`)
 - OpenAI GPT-4 Turbo integration for content summarization
 - Generates concise summaries with key points extraction
-- Automatic impact scoring (1-10 scale)
-- Category classification for story organization
+- Automatic impact scoring (1-10 scale) - measures significance to AI practitioners, businesses, and researchers
+- Category classification for story organization (AI Policy, AI Business, AI Research, AI Products, Machine Learning, Robotics, Tech Industry, Other)
 - Fallback handling when API unavailable
 
 **Newsletter Generation** (`newsletter.py`)
 - HTML template generation with gradient headers and responsive design
+- Stories grouped by category with section headers and emoji icons
+- Category-based organization: preferred categories first, then alphabetical, then "Other"
+- Robust category handling - normalizes non-string/falsy categories to "Other"
 - Plain text version creation for email compatibility
-- Story sorting by impact score
+- Story sorting by impact score within each category
 - Supports both web display and email distribution
 
 **Email Distribution** (`sendfox_client.py`)
@@ -64,7 +67,8 @@ Preferred communication style: Simple, everyday language.
 **Web Interface** (`app.py`)
 - Streamlit dashboard with real-time metrics
 - Manual newsletter generation with progress tracking
-- Archive browser for historical newsletters
+- HTML export functionality for both new and archived newsletters
+- Archive browser for historical newsletters with view and download options
 - Configuration panel for API status
 
 ### Data Flow
