@@ -9,8 +9,7 @@ logger = logging.getLogger(__name__)
 
 class NewsletterGenerator:
     def __init__(self):
-        # Load and encode logo
-        self.logo_base64 = self._load_logo()
+        self.logo_base64 = None  # Lazy load when needed
         
         self.template_style = """
         <style>
@@ -199,6 +198,39 @@ class NewsletterGenerator:
                 color: #888;
                 font-weight: normal;
             }
+            .category-cta {
+                background: linear-gradient(135deg, #cda600 0%, #b89400 100%);
+                border-radius: 8px;
+                padding: 25px;
+                margin: 30px 0 40px 0;
+                text-align: center;
+                color: white;
+            }
+            .category-cta h3 {
+                margin: 0 0 15px 0;
+                font-size: 1.3em;
+                font-weight: 600;
+            }
+            .category-cta p {
+                margin: 0 0 20px 0;
+                font-size: 1em;
+                opacity: 0.95;
+            }
+            .cta-button {
+                display: inline-block;
+                background: white;
+                color: #cda600;
+                padding: 12px 30px;
+                border-radius: 25px;
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 1em;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+            .cta-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
             @media (max-width: 600px) {
                 body {
                     padding: 10px;
@@ -285,6 +317,10 @@ class NewsletterGenerator:
         current_date = datetime.now().strftime('%B %d, %Y')
         story_count = len(stories)
         
+        # Lazy load logo
+        if self.logo_base64 is None:
+            self.logo_base64 = self._load_logo()
+        
         logo_html = f'<img src="{self.logo_base64}" alt="Innopower Logo">' if self.logo_base64 else '<h1>AI Daily</h1>'
         
         return f"""
@@ -367,8 +403,30 @@ class NewsletterGenerator:
         
         stories_html = ""
         
+        # CTA messages to rotate through
+        cta_messages = [
+            {
+                "title": "Stay Ahead of AI Innovation",
+                "message": "Join the Innopower community for exclusive insights, AI trends, and networking opportunities.",
+                "button_text": "Visit Innopower.ai",
+                "url": "https://innopower.ai"
+            },
+            {
+                "title": "Connect with AI Leaders",
+                "message": "Attend our next Innopower event to network with AI innovators and industry experts.",
+                "button_text": "Explore Events",
+                "url": "https://innopower.ai"
+            },
+            {
+                "title": "Join the AI Revolution",
+                "message": "Follow Innopower for cutting-edge AI insights, resources, and community updates.",
+                "button_text": "Follow Innopower",
+                "url": "https://innopower.ai"
+            }
+        ]
+        
         # Generate stories grouped by category
-        for category in all_categories:
+        for idx, category in enumerate(all_categories):
             if category in categories and categories[category]:
                 # Add category section header
                 stories_html += f"""
@@ -383,6 +441,16 @@ class NewsletterGenerator:
                 for story in categories[category]:
                     story_html = self._generate_story_html(story)
                     stories_html += story_html
+                
+                # Add CTA at bottom of category (rotate through messages)
+                cta = cta_messages[idx % len(cta_messages)]
+                stories_html += f"""
+                <div class="category-cta">
+                    <h3>{cta['title']}</h3>
+                    <p>{cta['message']}</p>
+                    <a href="{cta['url']}" class="cta-button" target="_blank" rel="noopener">{cta['button_text']}</a>
+                </div>
+                """
                 
                 stories_html += "</div>"
         
@@ -472,6 +540,11 @@ class NewsletterGenerator:
     def _generate_empty_newsletter(self) -> str:
         """Generate newsletter when no stories are available"""
         current_date = datetime.now().strftime('%B %d, %Y')
+        
+        # Lazy load logo
+        if self.logo_base64 is None:
+            self.logo_base64 = self._load_logo()
+        
         logo_html = f'<img src="{self.logo_base64}" alt="Innopower Logo">' if self.logo_base64 else '<h1>AI Daily</h1>'
         
         return f"""

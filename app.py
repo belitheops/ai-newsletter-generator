@@ -115,14 +115,20 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         unique_stories = deduplicator.deduplicate_stories(articles)
         st.success(f"✅ Consolidated to {len(unique_stories)} unique stories")
         
+        # Step 2.5: Limit stories to process (optimize performance)
+        MAX_STORIES_TO_SUMMARIZE = 15  # Only summarize top candidates to save time
+        stories_to_process = unique_stories[:MAX_STORIES_TO_SUMMARIZE]
+        if len(unique_stories) > MAX_STORIES_TO_SUMMARIZE:
+            st.info(f"📊 Processing {MAX_STORIES_TO_SUMMARIZE} most recent stories from {len(unique_stories)} total")
+        
         # Step 3: Summarize articles
         status_text.text("📝 Summarizing articles with OpenAI...")
         progress_bar.progress(0.50)
         summaries = []
-        for i, story in enumerate(unique_stories):
+        for i, story in enumerate(stories_to_process):
             summary = summarizer.summarize_story(story)
             summaries.append(summary)
-            progress_bar.progress(0.50 + (i + 1) / len(unique_stories) * 0.25)
+            progress_bar.progress(0.50 + (i + 1) / len(stories_to_process) * 0.25)
         
         st.success(f"✅ Generated {len(summaries)} summaries")
         
