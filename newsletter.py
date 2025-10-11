@@ -1,12 +1,17 @@
 from typing import List, Dict
 from datetime import datetime
 import logging
+import base64
+import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class NewsletterGenerator:
     def __init__(self):
+        # Load and encode logo
+        self.logo_base64 = self._load_logo()
+        
         self.template_style = """
         <style>
             body {
@@ -29,6 +34,12 @@ class NewsletterGenerator:
                 color: #cda600;
                 padding: 40px 30px;
                 text-align: center;
+            }
+            .header img {
+                max-width: 400px;
+                width: 100%;
+                height: auto;
+                margin-bottom: 20px;
             }
             .header h1 {
                 margin: 0;
@@ -254,14 +265,31 @@ class NewsletterGenerator:
         
         return newsletter_html
 
+    def _load_logo(self) -> str:
+        """Load and encode logo as base64"""
+        try:
+            logo_path = "attached_assets/Innopower Logo white background_1760182832027.png"
+            if os.path.exists(logo_path):
+                with open(logo_path, 'rb') as f:
+                    logo_data = base64.b64encode(f.read()).decode('utf-8')
+                    return f"data:image/png;base64,{logo_data}"
+            else:
+                logger.warning(f"Logo file not found: {logo_path}")
+                return ""
+        except Exception as e:
+            logger.error(f"Error loading logo: {e}")
+            return ""
+    
     def _generate_header(self, stories: List[Dict]) -> str:
         """Generate newsletter header"""
         current_date = datetime.now().strftime('%B %d, %Y')
         story_count = len(stories)
         
+        logo_html = f'<img src="{self.logo_base64}" alt="Innopower Logo">' if self.logo_base64 else '<h1>AI Daily</h1>'
+        
         return f"""
         <div class="header">
-            <h1>🤖 AI Daily</h1>
+            {logo_html}
             <p>Your curated AI & technology newsletter for {current_date}</p>
         </div>
         """
@@ -444,6 +472,7 @@ class NewsletterGenerator:
     def _generate_empty_newsletter(self) -> str:
         """Generate newsletter when no stories are available"""
         current_date = datetime.now().strftime('%B %d, %Y')
+        logo_html = f'<img src="{self.logo_base64}" alt="Innopower Logo">' if self.logo_base64 else '<h1>AI Daily</h1>'
         
         return f"""
         <!DOCTYPE html>
@@ -457,7 +486,7 @@ class NewsletterGenerator:
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>🤖 AI Daily</h1>
+                    {logo_html}
                     <p>Your curated AI & technology newsletter for {current_date}</p>
                 </div>
                 <div class="content">
