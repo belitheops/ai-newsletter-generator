@@ -62,6 +62,7 @@ class NewsletterDatabase:
                 'id': newsletter_id,
                 'title': newsletter_data.get('title', ''),
                 'html_content': newsletter_data.get('html_content', ''),
+                'markdown_content': newsletter_data.get('markdown_content', ''),
                 'story_count': newsletter_data.get('story_count', 0),
                 'created_at': newsletter_data.get('created_at', datetime.now().isoformat()),
                 'generation_method': newsletter_data.get('generation_method', 'manual'),
