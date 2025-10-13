@@ -41,12 +41,14 @@ Preferred communication style: Simple, everyday language.
 
 **Newsletter Generation** (`newsletter.py`)
 - HTML template generation with gradient headers and responsive design
+- Markdown format generation for portable, readable exports
 - Stories grouped by category with section headers and emoji icons
 - Category-based organization: preferred categories first, then alphabetical, then "Other"
 - Robust category handling - normalizes non-string/falsy categories to "Other"
 - Plain text version creation for email compatibility
 - Story sorting by impact score within each category
 - Supports both web display and email distribution
+- Innopower branding with custom logo and call-to-action sections
 
 **Email Distribution** (`sendfox_client.py`)
 - SendFox API integration for campaign creation
@@ -67,20 +69,21 @@ Preferred communication style: Simple, everyday language.
 **Web Interface** (`app.py`)
 - Streamlit dashboard with real-time metrics
 - Manual newsletter generation with progress tracking
-- HTML export functionality for both new and archived newsletters
+- Dual export functionality: HTML and Markdown formats for both new and archived newsletters
 - Archive browser for historical newsletters with view and download options
 - Configuration panel for API status
+- Backward compatibility for archived newsletters (markdown available for new newsletters only)
 
 ### Data Flow
 
 1. **Scheduled/Manual Trigger** → Initiates workflow
-2. **Scraping** → Collects articles from 10 RSS feeds
+2. **Scraping** → Collects articles from 10 RSS feeds (limited to 15 most recent for performance)
 3. **Deduplication** → Identifies and consolidates similar stories using TF-IDF/cosine similarity
-4. **Summarization** → Generates AI summaries, scores, and categories via OpenAI
-5. **Newsletter Generation** → Creates HTML and text versions
-6. **Persistence** → Saves to JSON database
+4. **Summarization** → Generates AI summaries, scores, and categories via OpenAI (top 15 stories)
+5. **Newsletter Generation** → Creates HTML, Markdown, and text versions (top 12 by impact score)
+6. **Persistence** → Saves to JSON database with all formats
 7. **Distribution** → Sends via SendFox email API
-8. **Display** → Available in web interface archive
+8. **Display** → Available in web interface archive with dual export options
 
 ### Key Design Patterns
 

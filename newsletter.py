@@ -626,3 +626,141 @@ Powered by intelligent curation and summarization
 """
         
         return text_content
+
+    def generate_markdown(self, summarized_stories: List[Dict]) -> str:
+        """Generate markdown version of the newsletter"""
+        if not summarized_stories:
+            return "# AI Daily Newsletter\n\nNo stories available today"
+        
+        current_date = datetime.now().strftime('%B %d, %Y')
+        
+        # Get logo for markdown (link to image)
+        logo_section = f"![Innopower Logo](https://innopower.ai/logo.png)\n\n"
+        
+        markdown_content = f"""{logo_section}# AI Daily Newsletter
+### {current_date}
+
+*Your curated AI & technology newsletter*
+
+---
+
+## 📊 Today's Overview
+
+**Total Stories:** {len(summarized_stories)}
+
+---
+
+"""
+        
+        # Group stories by category
+        categorized_stories = {}
+        for story in summarized_stories:
+            category = story.get('category', 'Other')
+            if not category or not isinstance(category, str):
+                category = 'Other'
+            
+            if category not in categorized_stories:
+                categorized_stories[category] = []
+            categorized_stories[category].append(story)
+        
+        # Category order and emoji mapping
+        category_order = ['AI Policy', 'AI Business', 'AI Research', 'AI Products', 'Machine Learning', 'Robotics', 'Tech Industry']
+        category_emojis = {
+            'AI Policy': '⚖️',
+            'AI Business': '💼',
+            'AI Research': '🔬',
+            'AI Products': '🚀',
+            'Machine Learning': '🤖',
+            'Robotics': '🦾',
+            'Tech Industry': '💻',
+            'Other': '📰'
+        }
+        
+        # Process categories in order
+        processed_categories = []
+        for category in category_order:
+            if category in categorized_stories:
+                processed_categories.append(category)
+        
+        # Add remaining categories alphabetically
+        for category in sorted(categorized_stories.keys()):
+            if category not in processed_categories and category != 'Other':
+                processed_categories.append(category)
+        
+        # Add 'Other' last if it exists
+        if 'Other' in categorized_stories:
+            processed_categories.append('Other')
+        
+        # Generate markdown for each category
+        for category in processed_categories:
+            stories = categorized_stories[category]
+            emoji = category_emojis.get(category, '📰')
+            
+            markdown_content += f"## {emoji} {category}\n\n"
+            
+            # Sort stories by impact score within category
+            sorted_stories = sorted(stories, key=lambda x: x.get('impact_score', 0), reverse=True)
+            
+            for story in sorted_stories:
+                title = story.get('title', 'Untitled')
+                summary = story.get('summary', 'No summary available')
+                impact_score = story.get('impact_score', 5)
+                url = story.get('url', '')
+                key_points = story.get('key_points', [])
+                
+                markdown_content += f"### {title}\n\n"
+                markdown_content += f"**Impact Score:** {impact_score}/10\n\n"
+                markdown_content += f"{summary}\n\n"
+                
+                if key_points:
+                    markdown_content += "**Key Points:**\n"
+                    for point in key_points:
+                        markdown_content += f"- {point}\n"
+                    markdown_content += "\n"
+                
+                if url:
+                    markdown_content += f"[Read Full Article]({url})\n\n"
+                
+                markdown_content += "---\n\n"
+            
+            # Add CTA section after category
+            cta_messages = [
+                {
+                    'title': '✨ Stay Ahead of AI Innovation',
+                    'message': 'Join thousands of AI professionals staying informed with daily insights.',
+                    'button': 'Visit Innopower.ai',
+                    'url': 'https://innopower.ai'
+                },
+                {
+                    'title': '🎯 Connect with AI Leaders',
+                    'message': 'Network with industry pioneers and thought leaders at Innopower events.',
+                    'button': 'Explore Events',
+                    'url': 'https://innopower.ai'
+                },
+                {
+                    'title': '🚀 Join the AI Revolution',
+                    'message': 'Be part of the community shaping the future of artificial intelligence.',
+                    'button': 'Follow Innopower',
+                    'url': 'https://innopower.ai'
+                }
+            ]
+            
+            import random
+            cta = random.choice(cta_messages)
+            markdown_content += f"### {cta['title']}\n\n"
+            markdown_content += f"{cta['message']}\n\n"
+            markdown_content += f"**[{cta['button']}]({cta['url']})**\n\n"
+            markdown_content += "---\n\n"
+        
+        # Footer
+        markdown_content += f"""
+---
+
+**Innopower AI Newsletter**  
+*Powered by intelligent curation and AI summarization*  
+Generated on {current_date}
+
+[Visit Innopower.ai](https://innopower.ai)
+"""
+        
+        return markdown_content

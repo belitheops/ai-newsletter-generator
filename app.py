@@ -144,14 +144,16 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
             top_summaries = summaries
         
         # Step 4: Generate newsletter
-        status_text.text("📄 Generating newsletter HTML...")
+        status_text.text("📄 Generating newsletter HTML and Markdown...")
         progress_bar.progress(0.85)
         newsletter_html = newsletter_gen.generate_newsletter(top_summaries)
+        newsletter_markdown = newsletter_gen.generate_markdown(top_summaries)
         
         # Step 5: Save to database
         newsletter_data = {
             'title': f"AI Newsletter - {datetime.now().strftime('%B %d, %Y')}",
             'html_content': newsletter_html,
+            'markdown_content': newsletter_markdown,
             'story_count': len(top_summaries),
             'created_at': datetime.now().isoformat()
         }
@@ -174,8 +176,8 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         # Display the newsletter
         st.subheader("📰 Generated Newsletter")
         
-        # Add export button
-        col1, col2 = st.columns([1, 4])
+        # Add export buttons
+        col1, col2, col3 = st.columns([1, 1, 3])
         with col1:
             st.download_button(
                 label="📥 Export HTML",
@@ -183,6 +185,14 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
                 file_name=f"newsletter_{datetime.now().strftime('%Y%m%d')}.html",
                 mime="text/html",
                 help="Download the newsletter as a standalone HTML file"
+            )
+        with col2:
+            st.download_button(
+                label="📝 Export Markdown",
+                data=newsletter_markdown,
+                file_name=f"newsletter_{datetime.now().strftime('%Y%m%d')}.md",
+                mime="text/markdown",
+                help="Download the newsletter as a Markdown file"
             )
         
         st.components.v1.html(newsletter_html, height=600, scrolling=True)
@@ -213,7 +223,7 @@ def show_newsletter_archive(db):
                 st.metric("Created", newsletter['created_at'][:16])
             
             # Action buttons
-            col_a, col_b = st.columns(2)
+            col_a, col_b, col_c = st.columns(3)
             with col_a:
                 if st.button(f"👁️ View", key=f"view_{newsletter['id']}"):
                     st.components.v1.html(newsletter['html_content'], height=600, scrolling=True)
@@ -223,9 +233,22 @@ def show_newsletter_archive(db):
                     data=newsletter['html_content'],
                     file_name=f"newsletter_{newsletter['created_at'][:10]}.html",
                     mime="text/html",
-                    key=f"download_{newsletter['id']}",
+                    key=f"download_html_{newsletter['id']}",
                     help="Download this newsletter as HTML"
                 )
+            with col_c:
+                # Check if markdown content exists (backward compatibility)
+                if 'markdown_content' in newsletter and newsletter['markdown_content']:
+                    st.download_button(
+                        label="📝 Export Markdown",
+                        data=newsletter['markdown_content'],
+                        file_name=f"newsletter_{newsletter['created_at'][:10]}.md",
+                        mime="text/markdown",
+                        key=f"download_md_{newsletter['id']}",
+                        help="Download this newsletter as Markdown"
+                    )
+                else:
+                    st.caption("Markdown not available")
 
 def show_configuration():
     st.header("⚙️ Configuration")
