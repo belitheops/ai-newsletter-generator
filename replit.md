@@ -71,8 +71,16 @@ Preferred communication style: Simple, everyday language.
 - Manual newsletter generation with progress tracking
 - Dual export functionality: HTML and Markdown formats for both new and archived newsletters
 - Archive browser for historical newsletters with view and download options
+- RSS Feed Management page for adding, editing, deleting, and toggling news sources
 - Configuration panel for API status
 - Backward compatibility for archived newsletters (markdown available for new newsletters only)
+
+**Feed Management** (`feed_manager.py`, `feeds.json`)
+- JSON-based storage for RSS feed configuration
+- CRUD operations: add, update, delete, toggle enable/disable
+- Feed categorization (Tech News, Research, AI Industry, Business, Other)
+- Dynamic feed loading - scraper automatically reloads when feeds change
+- Backup system for feed configuration safety
 
 ### Data Flow
 
