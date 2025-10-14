@@ -1,0 +1,21 @@
+[
+  {
+    "id": "default_ai_newsletter",
+    "name": "AI Daily Newsletter",
+    "description": "Daily AI and technology news digest",
+    "enabled": true,
+    "feed_ids": [],
+    "category_ids": [],
+    "max_stories": 12,
+    "schedule_time": "07:00",
+    "schedule_enabled": true,
+    "sendfox_list_id": null,
+    "branding": {
+      "logo_enabled": true,
+      "header_color": "#000000",
+      "accent_color": "#cda600"
+    },
+    "created_at": "2025-10-14T17:57:28.034190",
+    "updated_at": "2025-10-14T17:57:28.034201"
+  }
+]

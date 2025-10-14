@@ -12,6 +12,7 @@ from scheduler import NewsletterScheduler
 from database import NewsletterDatabase
 from feed_manager import FeedManager
 from category_manager import CategoryManager
+from newsletter_config import NewsletterConfigManager
 import json
 
 # Initialize components
@@ -45,6 +46,7 @@ def main():
         "Dashboard", 
         "Generate Newsletter", 
         "Newsletter Archive",
+        "Newsletter Management",
         "RSS Feed Management",
         "Category Management",
         "Configuration"
@@ -56,6 +58,8 @@ def main():
         show_generate_newsletter(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db)
     elif page == "Newsletter Archive":
         show_newsletter_archive(db)
+    elif page == "Newsletter Management":
+        show_newsletter_management(scraper, summarizer)
     elif page == "RSS Feed Management":
         show_feed_management(scraper)
     elif page == "Category Management":
@@ -103,18 +107,63 @@ def show_dashboard(db):
 def show_generate_newsletter(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db):
     st.header("🔧 Generate Newsletter")
     
+    # Newsletter selection
+    config_manager = NewsletterConfigManager()
+    configs = config_manager.get_all_configs()
+    
+    config_options = {c['id']: c['name'] for c in configs}
+    selected_config_id = st.selectbox(
+        "📰 Select Newsletter",
+        options=list(config_options.keys()),
+        format_func=lambda x: config_options[x],
+        help="Choose which newsletter configuration to generate"
+    )
+    
+    # Show config details
+    selected_config = config_manager.get_config_by_id(selected_config_id)
+    if selected_config:
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Max Stories", selected_config.get('max_stories', 12))
+        with col2:
+            feed_count = len(selected_config.get('feed_ids', [])) or "All"
+            st.metric("RSS Feeds", feed_count)
+        with col3:
+            cat_count = len(selected_config.get('category_ids', [])) or "All"
+            st.metric("Categories", cat_count)
+        
+        if selected_config.get('description'):
+            st.info(f"ℹ️ {selected_config['description']}")
+    
     if st.button("🚀 Generate Newsletter Now", type="primary"):
-        generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db)
+        generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db, selected_config_id)
 
-def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db):
+def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db, config_id=None):
     progress_bar = st.progress(0)
     status_text = st.empty()
     
+    # Load configuration
+    config_manager = NewsletterConfigManager()
+    feed_manager = FeedManager()
+    category_manager = CategoryManager()
+    
+    config = config_manager.get_config_by_id(config_id) if config_id else config_manager.get_all_configs()[0]
+    
     try:
-        # Step 1: Scrape articles
-        status_text.text("🔍 Scraping articles from 10 AI/tech news sources...")
+        # Get feeds for this newsletter
+        all_feeds = feed_manager.get_all_feeds()
+        config_feeds = config_manager.get_config_feeds(config['id'], all_feeds)
+        
+        # Step 1: Scrape articles from selected feeds
+        status_text.text(f"🔍 Scraping articles from {len(config_feeds)} selected sources...")
         progress_bar.progress(0.10)
+        
+        # Temporarily update scraper with config feeds
+        original_sources = scraper.sources
+        scraper.sources = [(f['name'], f['url']) for f in config_feeds]
         articles = scraper.scrape_all_sources()
+        scraper.sources = original_sources  # Restore original
+        
         st.success(f"✅ Scraped {len(articles)} articles")
         
         # Step 2: Deduplicate stories
@@ -140,10 +189,10 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         
         st.success(f"✅ Generated {len(summaries)} summaries")
         
-        # Step 3.5: Select top 12 stories by impact score
+        # Step 3.5: Select top stories by impact score
         status_text.text("🎯 Selecting top stories by impact...")
         progress_bar.progress(0.80)
-        MAX_STORIES = 12
+        MAX_STORIES = config.get('max_stories', 12)
         if len(summaries) > MAX_STORIES:
             sorted_summaries = sorted(summaries, key=lambda x: x.get('impact_score', 0), reverse=True)
             top_summaries = sorted_summaries[:MAX_STORIES]
@@ -159,11 +208,13 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         
         # Step 5: Save to database
         newsletter_data = {
-            'title': f"AI Newsletter - {datetime.now().strftime('%B %d, %Y')}",
+            'title': f"{config['name']} - {datetime.now().strftime('%B %d, %Y')}",
             'html_content': newsletter_html,
             'markdown_content': newsletter_markdown,
             'story_count': len(top_summaries),
-            'created_at': datetime.now().isoformat()
+            'created_at': datetime.now().isoformat(),
+            'config_id': config['id'],
+            'config_name': config['name']
         }
         newsletter_id = db.save_newsletter(newsletter_data)
         
@@ -468,6 +519,189 @@ def show_category_management(summarizer):
                         st.rerun()
                     else:
                         st.error("Failed to add category. A category with this name may already exist.")
+
+def show_newsletter_management(scraper, summarizer):
+    st.header("📰 Newsletter Management")
+    st.markdown("Create and manage multiple newsletter configurations with different sources and categories")
+    
+    config_manager = NewsletterConfigManager()
+    feed_manager = FeedManager()
+    category_manager = CategoryManager()
+    
+    # Tabs for different operations
+    tab1, tab2 = st.tabs(["📋 All Newsletters", "➕ Create Newsletter"])
+    
+    with tab1:
+        st.subheader("Current Newsletter Configurations")
+        configs = config_manager.get_all_configs()
+        
+        if not configs:
+            st.info("No newsletter configurations. Create your first newsletter in the 'Create Newsletter' tab.")
+        else:
+            # Display stats
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Newsletters", len(configs))
+            with col2:
+                enabled_count = len([c for c in configs if c.get('enabled', True)])
+                st.metric("Enabled Newsletters", enabled_count)
+            with col3:
+                scheduled_count = len([c for c in configs if c.get('schedule_enabled', False)])
+                st.metric("Scheduled", scheduled_count)
+            
+            st.markdown("---")
+            
+            # Display newsletters
+            for config in configs:
+                with st.expander(f"{'✅' if config.get('enabled') else '❌'} {config['name']}"):
+                    col1, col2 = st.columns([3, 1])
+                    
+                    with col1:
+                        st.markdown(f"**Description:** {config.get('description', 'No description')}")
+                        st.text(f"ID: {config['id']}")
+                        st.text(f"Max Stories: {config.get('max_stories', 12)}")
+                        
+                        # Show feeds
+                        feed_ids = config.get('feed_ids', [])
+                        if not feed_ids:
+                            st.caption("📡 Feeds: All enabled feeds")
+                        else:
+                            all_feeds = feed_manager.get_all_feeds()
+                            feed_names = [f['name'] for f in all_feeds if f['id'] in feed_ids]
+                            st.caption(f"📡 Feeds: {', '.join(feed_names)}")
+                        
+                        # Show categories
+                        cat_ids = config.get('category_ids', [])
+                        if not cat_ids:
+                            st.caption("🏷️ Categories: All enabled categories")
+                        else:
+                            all_cats = category_manager.get_all_categories()
+                            cat_names = [c['name'] for c in all_cats if c['id'] in cat_ids]
+                            st.caption(f"🏷️ Categories: {', '.join(cat_names)}")
+                        
+                        if config.get('schedule_enabled'):
+                            st.caption(f"⏰ Schedule: Daily at {config.get('schedule_time', '07:00')}")
+                        else:
+                            st.caption("⏰ Schedule: Manual only")
+                        
+                        if 'created_at' in config:
+                            st.caption(f"Created: {config['created_at'][:10]}")
+                    
+                    with col2:
+                        # Toggle enable/disable
+                        if st.button("🔄 Toggle", key=f"toggle_nl_{config['id']}"):
+                            if config_manager.toggle_config(config['id']):
+                                st.success(f"{'Disabled' if config.get('enabled') else 'Enabled'} {config['name']}")
+                                st.rerun()
+                        
+                        # Delete button (protect if only one)
+                        if len(configs) > 1:
+                            if st.button("🗑️ Delete", key=f"delete_nl_{config['id']}", type="secondary"):
+                                if config_manager.delete_config(config['id']):
+                                    st.success(f"Deleted {config['name']}")
+                                    st.rerun()
+                                else:
+                                    st.error("Failed to delete newsletter")
+                        else:
+                            st.caption("Cannot delete only config")
+                    
+                    # Edit section
+                    st.markdown("---")
+                    st.markdown("**Edit Newsletter:**")
+                    with st.form(f"edit_nl_{config['id']}"):
+                        new_name = st.text_input("Name", value=config['name'], key=f"nl_name_{config['id']}")
+                        new_desc = st.text_input("Description", value=config.get('description', ''), key=f"nl_desc_{config['id']}")
+                        
+                        col_a, col_b = st.columns(2)
+                        with col_a:
+                            new_max = st.number_input("Max Stories", value=config.get('max_stories', 12), min_value=1, max_value=50, key=f"nl_max_{config['id']}")
+                        with col_b:
+                            new_time = st.text_input("Schedule Time", value=config.get('schedule_time', '07:00'), key=f"nl_time_{config['id']}")
+                        
+                        # Feed selection
+                        all_feeds = feed_manager.get_all_feeds()
+                        feed_options = {f['id']: f['name'] for f in all_feeds}
+                        current_feed_ids = config.get('feed_ids', [])
+                        selected_feeds = st.multiselect(
+                            "RSS Feeds (empty = all)",
+                            options=list(feed_options.keys()),
+                            default=current_feed_ids,
+                            format_func=lambda x: feed_options[x],
+                            key=f"nl_feeds_{config['id']}"
+                        )
+                        
+                        # Category selection
+                        all_cats = category_manager.get_all_categories()
+                        cat_options = {c['id']: c['name'] for c in all_cats}
+                        current_cat_ids = config.get('category_ids', [])
+                        selected_cats = st.multiselect(
+                            "Categories (empty = all)",
+                            options=list(cat_options.keys()),
+                            default=current_cat_ids,
+                            format_func=lambda x: cat_options[x],
+                            key=f"nl_cats_{config['id']}"
+                        )
+                        
+                        if st.form_submit_button("💾 Update"):
+                            if config_manager.update_config(
+                                config['id'],
+                                name=new_name,
+                                description=new_desc,
+                                max_stories=new_max,
+                                schedule_time=new_time,
+                                feed_ids=selected_feeds,
+                                category_ids=selected_cats
+                            ):
+                                st.success(f"✅ Updated {new_name}")
+                                st.rerun()
+                            else:
+                                st.error("Failed to update newsletter")
+    
+    with tab2:
+        st.subheader("Create New Newsletter")
+        
+        with st.form("add_newsletter_form"):
+            new_name = st.text_input("Newsletter Name", placeholder="e.g., AI Research Weekly")
+            new_desc = st.text_input("Description", placeholder="e.g., Weekly digest of AI research papers")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                new_max = st.number_input("Max Stories", value=12, min_value=1, max_value=50)
+            with col2:
+                new_time = st.text_input("Schedule Time (HH:MM)", value="07:00")
+            
+            # Feed selection
+            all_feeds = feed_manager.get_all_feeds()
+            feed_options = {f['id']: f['name'] for f in all_feeds}
+            selected_feeds = st.multiselect(
+                "RSS Feeds (leave empty to use all enabled feeds)",
+                options=list(feed_options.keys()),
+                format_func=lambda x: feed_options[x]
+            )
+            
+            # Category selection
+            all_cats = category_manager.get_all_categories()
+            cat_options = {c['id']: c['name'] for c in all_cats}
+            selected_cats = st.multiselect(
+                "Categories (leave empty to use all enabled categories)",
+                options=list(cat_options.keys()),
+                format_func=lambda x: cat_options[x]
+            )
+            
+            st.info("💡 Empty feeds/categories means 'use all enabled'. This gives you flexibility to manage sources centrally.")
+            
+            submitted = st.form_submit_button("➕ Create Newsletter")
+            
+            if submitted:
+                if not new_name:
+                    st.error("Please provide a newsletter name")
+                else:
+                    if config_manager.add_config(new_name, new_desc, selected_feeds, selected_cats, new_max):
+                        st.success(f"✅ Created {new_name} successfully!")
+                        st.balloons()
+                        st.rerun()
+                    else:
+                        st.error("Failed to create newsletter. A newsletter with this name may already exist.")
 
 def show_configuration():
     st.header("⚙️ Configuration")
