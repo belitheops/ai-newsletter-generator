@@ -178,14 +178,26 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         if len(unique_stories) > MAX_STORIES_TO_SUMMARIZE:
             st.info(f"📊 Processing {MAX_STORIES_TO_SUMMARIZE} most recent stories from {len(unique_stories)} total")
         
-        # Step 3: Summarize articles
+        # Get categories for this newsletter
+        all_categories = category_manager.get_all_categories()
+        config_category_names = config_manager.get_config_categories(config['id'], all_categories)
+        
+        # Step 3: Summarize articles with config-specific categories
         status_text.text("📝 Summarizing articles with OpenAI...")
         progress_bar.progress(0.50)
+        
+        # Temporarily set summarizer categories
+        original_categories = summarizer.category_manager.get_all_categories()
+        summarizer.allowed_categories = config_category_names + ['Other']
+        
         summaries = []
         for i, story in enumerate(stories_to_process):
             summary = summarizer.summarize_story(story)
             summaries.append(summary)
             progress_bar.progress(0.50 + (i + 1) / len(stories_to_process) * 0.25)
+        
+        # Restore original categories
+        summarizer.allowed_categories = None
         
         st.success(f"✅ Generated {len(summaries)} summaries")
         

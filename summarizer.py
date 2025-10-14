@@ -23,6 +23,7 @@ class ArticleSummarizer:
         # Load categories from CategoryManager
         self.category_manager = CategoryManager()
         self.valid_categories = self.category_manager.get_category_names(enabled_only=True)
+        self.allowed_categories = None  # Can be set to filter categories for specific newsletters
     
     def reload_categories(self):
         """Reload categories from CategoryManager (useful when categories are updated)"""
@@ -74,7 +75,9 @@ class ArticleSummarizer:
             raise ValueError("OpenAI API key not configured")
             
         try:
-            categories_list = ', '.join([f'"{cat}"' for cat in self.valid_categories])
+            # Use allowed_categories if set, otherwise use all valid categories
+            categories_to_use = self.allowed_categories if self.allowed_categories else self.valid_categories
+            categories_list = ', '.join([f'"{cat}"' for cat in categories_to_use])
             
             prompt = f"""
             Please analyze the following AI/technology news article and provide a comprehensive summary.

@@ -66,6 +66,8 @@ class NewsletterDatabase:
                 'story_count': newsletter_data.get('story_count', 0),
                 'created_at': newsletter_data.get('created_at', datetime.now().isoformat()),
                 'generation_method': newsletter_data.get('generation_method', 'manual'),
+                'config_id': newsletter_data.get('config_id', None),
+                'config_name': newsletter_data.get('config_name', None),
                 'email_sent': False,
                 'email_sent_at': None,
                 'error_reason': newsletter_data.get('error_reason', None)
