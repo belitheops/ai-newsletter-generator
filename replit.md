@@ -59,6 +59,8 @@ Preferred communication style: Simple, everyday language.
 - Schedule library for daily 7 AM newsletter generation
 - Threaded execution to avoid blocking web interface
 - Automatic workflow orchestration (scrape → deduplicate → summarize → generate → send)
+- Thread-safe coordination with manual workflows via shared lock
+- Currently uses default newsletter configuration (future: support multiple configs)
 
 **Data Persistence** (`database.py`)
 - JSON file-based storage (`newsletters.json`)
@@ -103,6 +105,14 @@ Preferred communication style: Simple, everyday language.
 - Database tracks config_id and config_name for each generated newsletter
 - Archive view displays which config was used for each newsletter
 - Backup system for configuration safety
+- Thread-safe generation via shared lock with scheduler
+
+**Shared Resources** (`shared_resources.py`)
+- Persistent threading lock for newsletter generation coordination
+- Survives Streamlit reruns (unlike module-level locks in app.py)
+- Serializes manual and scheduled newsletter runs to prevent concurrent execution
+- Protects database writes and SendFox API sends from race conditions
+- Both app.py and scheduler.py import and use the same lock instance
 
 ### Data Flow
 
@@ -120,6 +130,17 @@ Preferred communication style: Simple, everyday language.
 **Singleton Components**: Components cached via `@st.cache_resource` for efficient resource usage
 
 **Background Threading**: Scheduler runs in daemon thread to enable concurrent web interface operation
+
+**Thread Safety**: Shared lock module prevents concurrent newsletter generation
+- Lock in shared_resources.py persists across Streamlit reruns
+- Both manual and scheduled workflows coordinate via the same lock instance
+- Non-blocking acquisition (blocking=False) with user-friendly warnings
+- Proper cleanup with finally blocks ensures lock release
+
+**Parameter Passing**: No shared state mutation for thread safety
+- Scraper accepts custom_sources parameter (avoids mutating self.sources)
+- Summarizer accepts custom_categories parameter (avoids mutating self.categories)
+- Each newsletter config generates with isolated feed/category lists
 
 **Graceful Degradation**: System continues with reduced functionality when APIs unavailable (logs warnings, uses fallbacks)
 
