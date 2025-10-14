@@ -10,6 +10,7 @@ from newsletter import NewsletterGenerator
 from sendfox_client import SendFoxClient
 from scheduler import NewsletterScheduler
 from database import NewsletterDatabase
+from feed_manager import FeedManager
 import json
 
 # Initialize components
@@ -42,7 +43,8 @@ def main():
     page = st.sidebar.selectbox("Choose a page", [
         "Dashboard", 
         "Generate Newsletter", 
-        "Newsletter Archive", 
+        "Newsletter Archive",
+        "RSS Feed Management",
         "Configuration"
     ])
     
@@ -52,6 +54,8 @@ def main():
         show_generate_newsletter(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db)
     elif page == "Newsletter Archive":
         show_newsletter_archive(db)
+    elif page == "RSS Feed Management":
+        show_feed_management(scraper)
     elif page == "Configuration":
         show_configuration()
 
@@ -249,6 +253,101 @@ def show_newsletter_archive(db):
                     )
                 else:
                     st.caption("Markdown not available")
+
+def show_feed_management(scraper):
+    st.header("📡 RSS Feed Management")
+    st.markdown("Manage your news sources - add, edit, delete, or disable RSS feeds")
+    
+    feed_manager = FeedManager()
+    
+    # Tabs for different operations
+    tab1, tab2 = st.tabs(["📋 All Feeds", "➕ Add New Feed"])
+    
+    with tab1:
+        st.subheader("Current RSS Feeds")
+        feeds = feed_manager.get_all_feeds()
+        
+        if not feeds:
+            st.info("No RSS feeds configured. Add your first feed in the 'Add New Feed' tab.")
+        else:
+            # Display stats
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Feeds", len(feeds))
+            with col2:
+                enabled_count = len([f for f in feeds if f.get('enabled', True)])
+                st.metric("Enabled Feeds", enabled_count)
+            with col3:
+                categories = feed_manager.get_categories()
+                st.metric("Categories", len(categories))
+            
+            st.markdown("---")
+            
+            # Display feeds by category
+            categories = feed_manager.get_categories()
+            
+            for category in categories:
+                st.subheader(f"📂 {category}")
+                category_feeds = feed_manager.get_feeds_by_category(category)
+                
+                for feed in category_feeds:
+                    with st.expander(f"{'✅' if feed.get('enabled') else '❌'} {feed['name']}"):
+                        col1, col2 = st.columns([3, 1])
+                        
+                        with col1:
+                            st.text(f"URL: {feed['url']}")
+                            st.text(f"ID: {feed['id']}")
+                            if 'added_at' in feed:
+                                st.caption(f"Added: {feed['added_at'][:10]}")
+                        
+                        with col2:
+                            # Toggle enable/disable
+                            if st.button(
+                                "🔄 Toggle" if feed.get('enabled') else "🔄 Enable",
+                                key=f"toggle_{feed['id']}"
+                            ):
+                                if feed_manager.toggle_feed(feed['id']):
+                                    scraper.reload_feeds()
+                                    st.success(f"{'Disabled' if feed.get('enabled') else 'Enabled'} {feed['name']}")
+                                    st.rerun()
+                            
+                            # Delete button
+                            if st.button("🗑️ Delete", key=f"delete_{feed['id']}", type="secondary"):
+                                if feed_manager.delete_feed(feed['id']):
+                                    scraper.reload_feeds()
+                                    st.success(f"Deleted {feed['name']}")
+                                    st.rerun()
+                                else:
+                                    st.error("Failed to delete feed")
+    
+    with tab2:
+        st.subheader("Add New RSS Feed")
+        
+        with st.form("add_feed_form"):
+            new_name = st.text_input("Feed Name", placeholder="e.g., AI Weekly News")
+            new_url = st.text_input("RSS Feed URL", placeholder="https://example.com/feed.xml")
+            new_category = st.selectbox(
+                "Category", 
+                ["Tech News", "Research", "AI Industry", "Business", "Other"] + feed_manager.get_categories(),
+                index=0
+            )
+            new_enabled = st.checkbox("Enabled", value=True)
+            
+            submitted = st.form_submit_button("➕ Add Feed")
+            
+            if submitted:
+                if not new_name or not new_url:
+                    st.error("Please provide both name and URL")
+                elif not new_url.startswith(('http://', 'https://')):
+                    st.error("URL must start with http:// or https://")
+                else:
+                    if feed_manager.add_feed(new_name, new_url, new_category, new_enabled):
+                        scraper.reload_feeds()
+                        st.success(f"✅ Added {new_name} successfully!")
+                        st.balloons()
+                        st.rerun()
+                    else:
+                        st.error("Failed to add feed. A feed with this name may already exist.")
 
 def show_configuration():
     st.header("⚙️ Configuration")
