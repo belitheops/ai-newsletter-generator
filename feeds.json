@@ -78,5 +78,14 @@
     "type": "rss",
     "enabled": true,
     "category": "Research"
+  },
+  {
+    "id": "bgr.com",
+    "name": "BGR.com",
+    "url": "https://www.bgr.com/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Tech News",
+    "added_at": "2025-10-14T14:30:06.228539"
   }
 ]

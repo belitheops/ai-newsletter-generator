@@ -78,14 +78,5 @@
     "type": "rss",
     "enabled": true,
     "category": "Research"
-  },
-  {
-    "id": "test_ai_news",
-    "name": "Test AI News",
-    "url": "https://test.com/feed.xml",
-    "type": "rss",
-    "enabled": false,
-    "category": "Tech News",
-    "added_at": "2025-10-14T14:11:42.548414"
   }
 ]
