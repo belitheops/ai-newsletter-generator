@@ -23,7 +23,6 @@ class ArticleSummarizer:
         # Load categories from CategoryManager
         self.category_manager = CategoryManager()
         self.valid_categories = self.category_manager.get_category_names(enabled_only=True)
-        self.allowed_categories = None  # Can be set to filter categories for specific newsletters
     
     def reload_categories(self):
         """Reload categories from CategoryManager (useful when categories are updated)"""
@@ -31,10 +30,14 @@ class ArticleSummarizer:
         self.valid_categories = self.category_manager.get_category_names(enabled_only=True)
         logger.info(f"Reloaded categories: {len(self.valid_categories)} categories available")
 
-    def summarize_story(self, story: Dict) -> Dict:
+    def summarize_story(self, story: Dict, custom_categories: List[str] = None) -> Dict:
         """
         Summarize a single story using OpenAI
         Returns story with added summary and metadata
+        
+        Args:
+            story: Story dictionary to summarize
+            custom_categories: Optional list of categories to use instead of default
         """
         try:
             # Prepare content for summarization
@@ -50,7 +53,7 @@ class ArticleSummarizer:
                 return self._create_fallback_summary(story)
             
             # Create summary using OpenAI
-            summary_data = self._generate_summary(text_to_summarize, source)
+            summary_data = self._generate_summary(text_to_summarize, source, custom_categories)
             
             # Add summary to story
             summarized_story = story.copy()
@@ -68,15 +71,21 @@ class ArticleSummarizer:
             logger.error(f"Error summarizing story '{story.get('title', 'Unknown')}': {e}")
             return self._create_fallback_summary(story)
 
-    def _generate_summary(self, text: str, source: str) -> Dict:
-        """Generate summary using OpenAI API"""
+    def _generate_summary(self, text: str, source: str, custom_categories: List[str] = None) -> Dict:
+        """Generate summary using OpenAI API
+        
+        Args:
+            text: Text to summarize
+            source: Source name
+            custom_categories: Optional list of categories to use instead of default
+        """
         if not self.client:
             logger.error("OpenAI client not initialized - API key missing")
             raise ValueError("OpenAI API key not configured")
             
         try:
-            # Use allowed_categories if set, otherwise use all valid categories
-            categories_to_use = self.allowed_categories if self.allowed_categories else self.valid_categories
+            # Use custom_categories if provided, otherwise use valid categories
+            categories_to_use = custom_categories if custom_categories is not None else self.valid_categories
             categories_list = ', '.join([f'"{cat}"' for cat in categories_to_use])
             
             prompt = f"""

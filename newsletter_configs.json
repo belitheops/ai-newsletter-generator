@@ -17,5 +17,33 @@
     },
     "created_at": "2025-10-14T17:57:28.034190",
     "updated_at": "2025-10-14T17:57:28.034201"
+  },
+  {
+    "id": "ai_research_weekly",
+    "name": "AI Research Weekly",
+    "description": "Weekly AI research and academic news",
+    "enabled": true,
+    "feed_ids": [
+      "mit_news_ai",
+      "mit_tech_review",
+      "openai_blog",
+      "sciencedaily_ai"
+    ],
+    "category_ids": [
+      "ai_research",
+      "machine_learning",
+      "robotics"
+    ],
+    "max_stories": 8,
+    "schedule_time": "07:00",
+    "schedule_enabled": false,
+    "sendfox_list_id": null,
+    "branding": {
+      "logo_enabled": true,
+      "header_color": "#000000",
+      "accent_color": "#cda600"
+    },
+    "created_at": "2025-10-14T18:07:35.308024",
+    "updated_at": "2025-10-14T18:07:35.308035"
   }
 ]

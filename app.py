@@ -13,6 +13,7 @@ from database import NewsletterDatabase
 from feed_manager import FeedManager
 from category_manager import CategoryManager
 from newsletter_config import NewsletterConfigManager
+from shared_resources import newsletter_generation_lock
 import json
 
 # Initialize components
@@ -142,14 +143,21 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
     progress_bar = st.progress(0)
     status_text = st.empty()
     
-    # Load configuration
-    config_manager = NewsletterConfigManager()
-    feed_manager = FeedManager()
-    category_manager = CategoryManager()
+    # Acquire lock to prevent concurrent newsletter generation
+    # This ensures thread-safety for database writes and SendFox sends
+    lock_acquired = newsletter_generation_lock.acquire(blocking=False)
     
-    config = config_manager.get_config_by_id(config_id) if config_id else config_manager.get_all_configs()[0]
+    if not lock_acquired:
+        st.warning("⚠️ Another newsletter generation is in progress. Please wait...")
+        return
     
     try:
+        # Load configuration
+        config_manager = NewsletterConfigManager()
+        feed_manager = FeedManager()
+        category_manager = CategoryManager()
+        
+        config = config_manager.get_config_by_id(config_id) if config_id else config_manager.get_all_configs()[0]
         # Get feeds for this newsletter
         all_feeds = feed_manager.get_all_feeds()
         config_feeds = config_manager.get_config_feeds(config['id'], all_feeds)
@@ -158,11 +166,16 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         status_text.text(f"🔍 Scraping articles from {len(config_feeds)} selected sources...")
         progress_bar.progress(0.10)
         
-        # Temporarily update scraper with config feeds
-        original_sources = scraper.sources
-        scraper.sources = [(f['name'], f['url']) for f in config_feeds]
-        articles = scraper.scrape_all_sources()
-        scraper.sources = original_sources  # Restore original
+        # Build custom sources dict for this newsletter (thread-safe - no mutation)
+        custom_sources = {
+            f['name']: {
+                'type': f.get('type', 'rss'),
+                'url': f['url'],
+                'category': f.get('category', 'Other')
+            }
+            for f in config_feeds
+        }
+        articles = scraper.scrape_all_sources(custom_sources=custom_sources)
         
         st.success(f"✅ Scraped {len(articles)} articles")
         
@@ -182,22 +195,17 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         all_categories = category_manager.get_all_categories()
         config_category_names = config_manager.get_config_categories(config['id'], all_categories)
         
-        # Step 3: Summarize articles with config-specific categories
+        # Step 3: Summarize articles with config-specific categories (thread-safe - no mutation)
         status_text.text("📝 Summarizing articles with OpenAI...")
         progress_bar.progress(0.50)
         
-        # Temporarily set summarizer categories
-        original_categories = summarizer.category_manager.get_all_categories()
-        summarizer.allowed_categories = config_category_names + ['Other']
+        custom_categories = config_category_names + ['Other']
         
         summaries = []
         for i, story in enumerate(stories_to_process):
-            summary = summarizer.summarize_story(story)
+            summary = summarizer.summarize_story(story, custom_categories=custom_categories)
             summaries.append(summary)
             progress_bar.progress(0.50 + (i + 1) / len(stories_to_process) * 0.25)
-        
-        # Restore original categories
-        summarizer.allowed_categories = None
         
         st.success(f"✅ Generated {len(summaries)} summaries")
         
@@ -272,6 +280,9 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         st.error(f"❌ Error generating newsletter: {str(e)}")
         progress_bar.progress(0)
         status_text.text("❌ Generation failed")
+    finally:
+        # Always release the lock
+        newsletter_generation_lock.release()
 
 def show_newsletter_archive(db):
     st.header("📚 Newsletter Archive")

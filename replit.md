@@ -93,6 +93,17 @@ Preferred communication style: Simple, everyday language.
 - "Other" category protected from deletion and always appears last
 - Backup system for category configuration safety
 
+**Newsletter Configuration Management** (`newsletter_config.py`, `newsletter_configs.json`)
+- Multiple newsletter configurations with independent settings
+- Each config specifies: name, description, selected feeds, selected categories, max stories
+- Empty feed/category lists default to "use all enabled" for central management flexibility
+- CRUD operations: add, update, delete, toggle enable/disable
+- Schedule settings per newsletter (time, enabled/disabled)
+- Generate page allows selecting which newsletter config to use
+- Database tracks config_id and config_name for each generated newsletter
+- Archive view displays which config was used for each newsletter
+- Backup system for configuration safety
+
 ### Data Flow
 
 1. **Scheduled/Manual Trigger** → Initiates workflow

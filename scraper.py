@@ -90,12 +90,19 @@ class NewsScraper:
             logger.error(f"Error extracting content from {url}: {e}")
             return ""
 
-    def scrape_all_sources(self) -> List[Dict]:
-        """Scrape articles from all configured news sources"""
+    def scrape_all_sources(self, custom_sources: Dict = None) -> List[Dict]:
+        """Scrape articles from all configured news sources
+        
+        Args:
+            custom_sources: Optional custom sources dict to use instead of self.sources
+        """
         all_articles = []
         failed_sources = []
         
-        for source_name, source_config in self.sources.items():
+        # Use custom sources if provided, otherwise use default
+        sources_to_scrape = custom_sources if custom_sources is not None else self.sources
+        
+        for source_name, source_config in sources_to_scrape.items():
             try:
                 logger.info(f"Scraping {source_name}...")
                 articles = self._scrape_source(source_name, source_config)
@@ -114,7 +121,8 @@ class NewsScraper:
                 continue
         
         # Log summary
-        logger.info(f"Total articles scraped: {len(all_articles)} from {len(self.sources) - len(failed_sources)}/{len(self.sources)} sources")
+        sources_count = len(sources_to_scrape)
+        logger.info(f"Total articles scraped: {len(all_articles)} from {sources_count - len(failed_sources)}/{sources_count} sources")
         if failed_sources:
             logger.warning(f"Failed sources: {', '.join(failed_sources)}")
         

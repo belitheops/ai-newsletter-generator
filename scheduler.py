@@ -8,6 +8,9 @@ from typing import Optional
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Import the newsletter generation lock to prevent concurrent runs
+from shared_resources import newsletter_generation_lock
+
 class NewsletterScheduler:
     def __init__(self, scraper, deduplicator, summarizer, newsletter_gen, sendfox, db):
         self.scraper = scraper
@@ -57,6 +60,13 @@ class NewsletterScheduler:
     def _generate_daily_newsletter(self):
         """Generate and send the daily newsletter"""
         logger.info("Starting daily newsletter generation...")
+        
+        # Acquire lock to prevent concurrent newsletter generation
+        lock_acquired = newsletter_generation_lock.acquire(blocking=False)
+        
+        if not lock_acquired:
+            logger.warning("⚠️ Newsletter generation already in progress (manual trigger). Skipping scheduled run.")
+            return
         
         try:
             # Step 1: Scrape articles
@@ -138,6 +148,9 @@ class NewsletterScheduler:
         except Exception as e:
             logger.error(f"Error during daily newsletter generation: {e}")
             self._save_error_newsletter(str(e))
+        finally:
+            # Always release the lock
+            newsletter_generation_lock.release()
 
     def _save_empty_newsletter(self, reason: str):
         """Save a record when no newsletter could be generated"""
