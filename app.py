@@ -284,14 +284,21 @@ def show_newsletter_archive(db):
     
     # Display newsletters
     for newsletter in newsletters:
-        with st.expander(f"📅 {newsletter['title']} ({newsletter['created_at'][:10]})"):
-            col1, col2, col3 = st.columns(3)
+        # Show config name if available
+        config_info = f" | {newsletter['config_name']}" if newsletter.get('config_name') else ""
+        with st.expander(f"📅 {newsletter['title']} ({newsletter['created_at'][:10]}){config_info}"):
+            col1, col2, col3, col4 = st.columns(4)
             with col1:
                 st.metric("Stories", newsletter['story_count'])
             with col2:
                 st.metric("Email Sent", "✅ Yes" if newsletter.get('email_sent') else "❌ No")
             with col3:
                 st.metric("Created", newsletter['created_at'][:16])
+            with col4:
+                if newsletter.get('config_name'):
+                    st.metric("Newsletter", newsletter['config_name'])
+                else:
+                    st.caption("Legacy")
             
             # Action buttons
             col_a, col_b, col_c = st.columns(3)
