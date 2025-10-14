@@ -10,54 +10,16 @@ from datetime import datetime, timedelta
 from typing import List, Dict
 import logging
 import re
+from feed_manager import FeedManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class NewsScraper:
     def __init__(self):
-        self.sources = {
-            'TechCrunch AI': {
-                'type': 'rss',
-                'url': 'https://techcrunch.com/category/artificial-intelligence/feed/'
-            },
-            'MIT News AI/ML': {
-                'type': 'rss',
-                'url': 'https://news.mit.edu/rss/topic/artificial-intelligence2'
-            },
-            'VentureBeat AI': {
-                'type': 'rss',
-                'url': 'https://venturebeat.com/category/ai/feed/'
-            },
-            'Wired AI': {
-                'type': 'rss',
-                'url': 'https://www.wired.com/feed/tag/ai/latest/rss'
-            },
-            'ScienceDaily AI': {
-                'type': 'rss',
-                'url': 'https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml'
-            },
-            'The Verge AI': {
-                'type': 'rss',
-                'url': 'https://www.theverge.com/rss/ai-artificial-intelligence/index.xml'
-            },
-            'AI News': {
-                'type': 'rss',
-                'url': 'https://artificialintelligence-news.com/feed/'
-            },
-            'MIT Tech Review': {
-                'type': 'rss',
-                'url': 'https://www.technologyreview.com/topic/artificial-intelligence/feed'
-            },
-            'Forbes AI': {
-                'type': 'rss',
-                'url': 'https://www.forbes.com/ai/feed/'
-            },
-            'OpenAI Blog': {
-                'type': 'rss',
-                'url': 'https://openai.com/blog/rss.xml'
-            }
-        }
+        # Load feeds from feed manager
+        self.feed_manager = FeedManager()
+        self.sources = self._load_sources_from_feeds()
         
         # Create session with retry logic
         self.session = self._create_session()
@@ -69,6 +31,26 @@ class NewsScraper:
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0',
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15'
         ]
+    
+    def _load_sources_from_feeds(self) -> Dict:
+        """Load sources from feed manager"""
+        sources = {}
+        enabled_feeds = self.feed_manager.get_enabled_feeds()
+        
+        for feed in enabled_feeds:
+            sources[feed['name']] = {
+                'type': feed.get('type', 'rss'),
+                'url': feed['url'],
+                'category': feed.get('category', 'Other')
+            }
+        
+        logger.info(f"Loaded {len(sources)} enabled RSS feeds")
+        return sources
+    
+    def reload_feeds(self):
+        """Reload feeds from feed manager (useful after updates)"""
+        self.feed_manager = FeedManager()
+        self.sources = self._load_sources_from_feeds()
     
     def _create_session(self):
         """Create requests session with retry logic"""
