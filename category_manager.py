@@ -108,10 +108,12 @@ class CategoryManager:
             # Generate ID from name
             category_id = name.lower().replace(' ', '_').replace('-', '_')
             
-            # Auto-assign priority if not provided
+            # Auto-assign priority if not provided (max 998 to keep "Other" at 999)
             if priority is None:
-                max_priority = max([cat.get('priority', 0) for cat in self.categories], default=0)
-                priority = max_priority + 1
+                # Exclude "Other" category when calculating max priority
+                non_other_categories = [cat for cat in self.categories if cat.get('id') != 'other']
+                max_priority = max([cat.get('priority', 0) for cat in non_other_categories], default=0)
+                priority = min(max_priority + 1, 998)
             
             new_category = {
                 'id': category_id,

@@ -448,8 +448,10 @@ def show_category_management(summarizer):
             with col1:
                 new_emoji = st.text_input("Emoji", value="📁", placeholder="e.g., 📊")
             with col2:
-                max_priority = max([c.get('priority', 0) for c in categories], default=0)
-                new_priority = st.number_input("Priority", value=max_priority + 1, min_value=1, max_value=999)
+                # Get max priority excluding "Other" category (which should always be 999)
+                non_other_categories = [c for c in categories if c.get('id') != 'other']
+                max_priority = max([c.get('priority', 0) for c in non_other_categories], default=0)
+                new_priority = st.number_input("Priority", value=min(max_priority + 1, 998), min_value=1, max_value=998)
             
             st.info("Lower priority numbers appear first in newsletters. 'Other' category always appears last.")
             
