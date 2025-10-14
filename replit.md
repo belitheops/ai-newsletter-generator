@@ -72,6 +72,7 @@ Preferred communication style: Simple, everyday language.
 - Dual export functionality: HTML and Markdown formats for both new and archived newsletters
 - Archive browser for historical newsletters with view and download options
 - RSS Feed Management page for adding, editing, deleting, and toggling news sources
+- Category Management page for creating and maintaining custom story categories
 - Configuration panel for API status
 - Backward compatibility for archived newsletters (markdown available for new newsletters only)
 
@@ -81,6 +82,16 @@ Preferred communication style: Simple, everyday language.
 - Feed categorization (Tech News, Research, AI Industry, Business, Other)
 - Dynamic feed loading - scraper automatically reloads when feeds change
 - Backup system for feed configuration safety
+
+**Category Management** (`category_manager.py`, `categories.json`)
+- JSON-based storage for newsletter categories with priority, emoji, and enabled status
+- CRUD operations: add, edit, delete, toggle enable/disable, reorder by priority
+- Default categories: AI Policy, AI Business, AI Research, AI Products, Machine Learning, Robotics, Tech Industry, Other
+- Priority-based ordering (1-998 for custom categories, 999 reserved for "Other")
+- Dynamic category loading - summarizer automatically reloads when categories change
+- Inline editing with emoji support and priority management
+- "Other" category protected from deletion and always appears last
+- Backup system for category configuration safety
 
 ### Data Flow
 
