@@ -1,0 +1,82 @@
+[
+  {
+    "id": "techcrunch_ai",
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Tech News"
+  },
+  {
+    "id": "mit_news_ai",
+    "name": "MIT News AI/ML",
+    "url": "https://news.mit.edu/rss/topic/artificial-intelligence2",
+    "type": "rss",
+    "enabled": true,
+    "category": "Research"
+  },
+  {
+    "id": "venturebeat_ai",
+    "name": "VentureBeat AI",
+    "url": "https://venturebeat.com/category/ai/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Tech News"
+  },
+  {
+    "id": "wired_ai",
+    "name": "Wired AI",
+    "url": "https://www.wired.com/feed/tag/ai/latest/rss",
+    "type": "rss",
+    "enabled": true,
+    "category": "Tech News"
+  },
+  {
+    "id": "sciencedaily_ai",
+    "name": "ScienceDaily AI",
+    "url": "https://www.sciencedaily.com/rss/computers_math/artificial_intelligence.xml",
+    "type": "rss",
+    "enabled": true,
+    "category": "Research"
+  },
+  {
+    "id": "theverge_ai",
+    "name": "The Verge AI",
+    "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+    "type": "rss",
+    "enabled": true,
+    "category": "Tech News"
+  },
+  {
+    "id": "ai_news",
+    "name": "AI News",
+    "url": "https://artificialintelligence-news.com/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "AI Industry"
+  },
+  {
+    "id": "mit_tech_review",
+    "name": "MIT Tech Review",
+    "url": "https://www.technologyreview.com/topic/artificial-intelligence/feed",
+    "type": "rss",
+    "enabled": true,
+    "category": "Research"
+  },
+  {
+    "id": "forbes_ai",
+    "name": "Forbes AI",
+    "url": "https://www.forbes.com/ai/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business"
+  },
+  {
+    "id": "openai_blog",
+    "name": "OpenAI Blog",
+    "url": "https://openai.com/blog/rss.xml",
+    "type": "rss",
+    "enabled": true,
+    "category": "Research"
+  }
+]
