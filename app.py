@@ -11,6 +11,7 @@ from sendfox_client import SendFoxClient
 from scheduler import NewsletterScheduler
 from database import NewsletterDatabase
 from feed_manager import FeedManager
+from category_manager import CategoryManager
 import json
 
 # Initialize components
@@ -45,6 +46,7 @@ def main():
         "Generate Newsletter", 
         "Newsletter Archive",
         "RSS Feed Management",
+        "Category Management",
         "Configuration"
     ])
     
@@ -56,6 +58,8 @@ def main():
         show_newsletter_archive(db)
     elif page == "RSS Feed Management":
         show_feed_management(scraper)
+    elif page == "Category Management":
+        show_category_management(summarizer)
     elif page == "Configuration":
         show_configuration()
 
@@ -348,6 +352,120 @@ def show_feed_management(scraper):
                         st.rerun()
                     else:
                         st.error("Failed to add feed. A feed with this name may already exist.")
+
+def show_category_management(summarizer):
+    st.header("🏷️ Category Management")
+    st.markdown("Manage newsletter categories - add, edit, reorder, or delete categories for story organization")
+    
+    category_manager = CategoryManager()
+    
+    # Tabs for different operations
+    tab1, tab2 = st.tabs(["📋 All Categories", "➕ Add New Category"])
+    
+    with tab1:
+        st.subheader("Current Categories")
+        categories = category_manager.get_all_categories()
+        
+        if not categories:
+            st.info("No categories configured. Add your first category in the 'Add New Category' tab.")
+        else:
+            # Display stats
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Total Categories", len(categories))
+            with col2:
+                enabled_count = len([c for c in categories if c.get('enabled', True)])
+                st.metric("Enabled Categories", enabled_count)
+            with col3:
+                st.metric("Priority Range", f"1 - {max([c.get('priority', 1) for c in categories])}")
+            
+            st.markdown("---")
+            
+            # Display categories in priority order
+            st.subheader("📂 Categories (in priority order)")
+            
+            for category in categories:
+                with st.expander(f"{category['emoji']} {'✅' if category.get('enabled') else '❌'} {category['name']} (Priority: {category.get('priority', 999)})"):
+                    col1, col2 = st.columns([3, 1])
+                    
+                    with col1:
+                        st.text(f"ID: {category['id']}")
+                        st.text(f"Emoji: {category['emoji']}")
+                        st.text(f"Priority: {category.get('priority', 999)}")
+                        if 'added_at' in category:
+                            st.caption(f"Added: {category['added_at'][:10]}")
+                    
+                    with col2:
+                        # Toggle enable/disable
+                        if st.button(
+                            "🔄 Toggle",
+                            key=f"toggle_cat_{category['id']}"
+                        ):
+                            if category_manager.toggle_category(category['id']):
+                                summarizer.reload_categories()
+                                st.success(f"{'Disabled' if category.get('enabled') else 'Enabled'} {category['name']}")
+                                st.rerun()
+                        
+                        # Delete button (protect "Other" category)
+                        if category['id'] != 'other':
+                            if st.button("🗑️ Delete", key=f"delete_cat_{category['id']}", type="secondary"):
+                                if category_manager.delete_category(category['id']):
+                                    summarizer.reload_categories()
+                                    st.success(f"Deleted {category['name']}")
+                                    st.rerun()
+                                else:
+                                    st.error("Failed to delete category")
+                        else:
+                            st.caption("Cannot delete 'Other'")
+                    
+                    # Edit section
+                    st.markdown("---")
+                    st.markdown("**Edit Category:**")
+                    with st.form(f"edit_cat_{category['id']}"):
+                        col_a, col_b, col_c = st.columns(3)
+                        with col_a:
+                            new_name = st.text_input("Name", value=category['name'], key=f"name_{category['id']}")
+                        with col_b:
+                            new_emoji = st.text_input("Emoji", value=category['emoji'], key=f"emoji_{category['id']}")
+                        with col_c:
+                            new_priority = st.number_input("Priority", value=category.get('priority', 999), min_value=1, max_value=999, key=f"priority_{category['id']}")
+                        
+                        if st.form_submit_button("💾 Update"):
+                            if category_manager.update_category(category['id'], name=new_name, emoji=new_emoji, priority=new_priority):
+                                summarizer.reload_categories()
+                                st.success(f"✅ Updated {new_name}")
+                                st.rerun()
+                            else:
+                                st.error("Failed to update category")
+    
+    with tab2:
+        st.subheader("Add New Category")
+        
+        with st.form("add_category_form"):
+            new_name = st.text_input("Category Name", placeholder="e.g., Data Science")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                new_emoji = st.text_input("Emoji", value="📁", placeholder="e.g., 📊")
+            with col2:
+                max_priority = max([c.get('priority', 0) for c in categories], default=0)
+                new_priority = st.number_input("Priority", value=max_priority + 1, min_value=1, max_value=999)
+            
+            st.info("Lower priority numbers appear first in newsletters. 'Other' category always appears last.")
+            
+            submitted = st.form_submit_button("➕ Add Category")
+            
+            if submitted:
+                if not new_name:
+                    st.error("Please provide a category name")
+                else:
+                    if category_manager.add_category(new_name, new_emoji, new_priority):
+                        summarizer.reload_categories()
+                        st.success(f"✅ Added {new_emoji} {new_name} successfully!")
+                        st.balloons()
+                        st.rerun()
+                    else:
+                        st.error("Failed to add category. A category with this name may already exist.")
 
 def show_configuration():
     st.header("⚙️ Configuration")
