@@ -1,0 +1,66 @@
+[
+  {
+    "id": "ai_policy",
+    "name": "AI Policy",
+    "emoji": "⚖️",
+    "priority": 1,
+    "enabled": true,
+    "added_at": "2025-10-14T14:48:58.378168"
+  },
+  {
+    "id": "ai_business",
+    "name": "AI Business",
+    "emoji": "💼",
+    "priority": 2,
+    "enabled": true,
+    "added_at": "2025-10-14T14:48:58.378179"
+  },
+  {
+    "id": "ai_research",
+    "name": "AI Research",
+    "emoji": "🔬",
+    "priority": 3,
+    "enabled": true,
+    "added_at": "2025-10-14T14:48:58.378182"
+  },
+  {
+    "id": "ai_products",
+    "name": "AI Products",
+    "emoji": "🚀",
+    "priority": 4,
+    "enabled": true,
+    "added_at": "2025-10-14T14:48:58.378184"
+  },
+  {
+    "id": "machine_learning",
+    "name": "Machine Learning",
+    "emoji": "🤖",
+    "priority": 5,
+    "enabled": true,
+    "added_at": "2025-10-14T14:48:58.378185"
+  },
+  {
+    "id": "robotics",
+    "name": "Robotics",
+    "emoji": "🦾",
+    "priority": 6,
+    "enabled": true,
+    "added_at": "2025-10-14T14:48:58.378190"
+  },
+  {
+    "id": "tech_industry",
+    "name": "Tech Industry",
+    "emoji": "💻",
+    "priority": 7,
+    "enabled": true,
+    "added_at": "2025-10-14T14:48:58.378191"
+  },
+  {
+    "id": "other",
+    "name": "Other",
+    "emoji": "📰",
+    "priority": 999,
+    "enabled": true,
+    "added_at": "2025-10-14T14:48:58.378193"
+  }
+]

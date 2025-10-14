@@ -3,6 +3,7 @@ from openai import OpenAI
 from typing import Dict, List
 import logging
 import json
+from category_manager import CategoryManager
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,6 +19,16 @@ class ArticleSummarizer:
         
         # Using GPT-4 Turbo for reliable summarization
         self.model = "gpt-4-turbo-preview"
+        
+        # Load categories from CategoryManager
+        self.category_manager = CategoryManager()
+        self.valid_categories = self.category_manager.get_category_names(enabled_only=True)
+    
+    def reload_categories(self):
+        """Reload categories from CategoryManager (useful when categories are updated)"""
+        self.category_manager = CategoryManager()
+        self.valid_categories = self.category_manager.get_category_names(enabled_only=True)
+        logger.info(f"Reloaded categories: {len(self.valid_categories)} categories available")
 
     def summarize_story(self, story: Dict) -> Dict:
         """
@@ -63,6 +74,8 @@ class ArticleSummarizer:
             raise ValueError("OpenAI API key not configured")
             
         try:
+            categories_list = ', '.join([f'"{cat}"' for cat in self.valid_categories])
+            
             prompt = f"""
             Please analyze the following AI/technology news article and provide a comprehensive summary.
             
@@ -81,7 +94,7 @@ class ArticleSummarizer:
             - Keep the summary concise but informative (50-100 words)
             - Include 2-4 key points that capture the most important aspects
             - Rate impact on a scale of 1-10 (1=minor news, 10=major breakthrough)
-            - Categorize as one of: "AI Research", "AI Products", "AI Business", "AI Policy", "Machine Learning", "Robotics", "Tech Industry", "Other"
+            - Categorize as one of: {categories_list}
             - Focus on what's new or significant about this story
             """
             
@@ -113,7 +126,7 @@ class ArticleSummarizer:
             'summary': str(result.get('summary', '')).strip(),
             'key_points': [],
             'impact_score': 5,
-            'category': 'AI/Technology'
+            'category': 'Other'
         }
         
         # Validate key points
@@ -128,13 +141,9 @@ class ArticleSummarizer:
         except (ValueError, TypeError):
             validated['impact_score'] = 5
         
-        # Validate category
-        valid_categories = [
-            'AI Research', 'AI Products', 'AI Business', 'AI Policy', 
-            'Machine Learning', 'Robotics', 'Tech Industry', 'Other'
-        ]
-        category = result.get('category', 'AI/Technology')
-        validated['category'] = category if category in valid_categories else 'Other'
+        # Validate category - use custom categories
+        category = result.get('category', 'Other')
+        validated['category'] = category if category in self.valid_categories else 'Other'
         
         return validated
 
