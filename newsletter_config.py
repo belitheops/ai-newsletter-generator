@@ -47,8 +47,10 @@ class NewsletterConfigManager:
             "sendfox_list_id": None,
             "branding": {
                 "logo_enabled": True,
+                "logo_path": "attached_assets/Innopower Logo white background_1760182832027.png",
                 "header_color": "#000000",
-                "accent_color": "#cda600"
+                "header_text_color": "#cda600",
+                "header_font": "Arial, sans-serif"
             },
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat()
@@ -122,8 +124,10 @@ class NewsletterConfigManager:
                 'sendfox_list_id': None,
                 'branding': {
                     'logo_enabled': True,
+                    'logo_path': 'attached_assets/Innopower Logo white background_1760182832027.png',
                     'header_color': '#000000',
-                    'accent_color': '#cda600'
+                    'header_text_color': '#cda600',
+                    'header_font': 'Arial, sans-serif'
                 },
                 'created_at': datetime.now().isoformat(),
                 'updated_at': datetime.now().isoformat()

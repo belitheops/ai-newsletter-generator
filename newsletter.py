@@ -256,7 +256,7 @@ class NewsletterGenerator:
         </style>
         """
 
-    def generate_newsletter(self, summarized_stories: List[Dict], title: str = None) -> str:
+    def generate_newsletter(self, summarized_stories: List[Dict], title: str = None, branding: Dict = None) -> str:
         """Generate complete HTML newsletter from summarized stories"""
         if not summarized_stories:
             return self._generate_empty_newsletter()
@@ -270,11 +270,24 @@ class NewsletterGenerator:
         if not title:
             title = f"AI Daily Newsletter - {datetime.now().strftime('%B %d, %Y')}"
         
-        # Generate newsletter components
-        header_html = self._generate_header(sorted_stories, title)
+        # Use provided branding or defaults
+        if not branding:
+            branding = {
+                'header_color': '#000000',
+                'header_text_color': '#cda600',
+                'header_font': 'Arial, sans-serif',
+                'logo_path': 'attached_assets/Innopower Logo white background_1760182832027.png',
+                'logo_enabled': True
+            }
+        
+        # Generate newsletter components with branding
+        header_html = self._generate_header(sorted_stories, title, branding)
         stats_html = self._generate_stats(sorted_stories)
         stories_html = self._generate_stories_html(sorted_stories)
         footer_html = self._generate_footer()
+        
+        # Generate custom styles with branding colors and fonts
+        custom_style = self._generate_custom_style(branding)
         
         # Combine all components
         newsletter_html = f"""
@@ -285,6 +298,7 @@ class NewsletterGenerator:
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>{title}</title>
             {self.template_style}
+            {custom_style}
         </head>
         <body>
             <div class="container">
@@ -301,10 +315,12 @@ class NewsletterGenerator:
         
         return newsletter_html
 
-    def _load_logo(self) -> str:
+    def _load_logo(self, logo_path: str = None) -> str:
         """Load and encode logo as base64"""
         try:
-            logo_path = "attached_assets/Innopower Logo white background_1760182832027.png"
+            if not logo_path:
+                logo_path = "attached_assets/Innopower Logo white background_1760182832027.png"
+            
             if os.path.exists(logo_path):
                 with open(logo_path, 'rb') as f:
                     logo_data = base64.b64encode(f.read()).decode('utf-8')
@@ -316,7 +332,30 @@ class NewsletterGenerator:
             logger.error(f"Error loading logo: {e}")
             return ""
     
-    def _generate_header(self, stories: List[Dict], title: str = None) -> str:
+    def _generate_custom_style(self, branding: Dict) -> str:
+        """Generate custom CSS based on branding settings"""
+        header_color = branding.get('header_color', '#000000')
+        header_text_color = branding.get('header_text_color', '#cda600')
+        header_font = branding.get('header_font', 'Arial, sans-serif')
+        
+        return f"""
+        <style>
+            .header {{
+                background: {header_color} !important;
+                font-family: {header_font} !important;
+            }}
+            .header p {{
+                color: {header_text_color} !important;
+                font-family: {header_font} !important;
+            }}
+            .header h1 {{
+                color: {header_text_color} !important;
+                font-family: {header_font} !important;
+            }}
+        </style>
+        """
+    
+    def _generate_header(self, stories: List[Dict], title: str = None, branding: Dict = None) -> str:
         """Generate newsletter header"""
         current_date = datetime.now().strftime('%B %d, %Y')
         story_count = len(stories)
@@ -325,11 +364,19 @@ class NewsletterGenerator:
         if not title:
             title = f"AI Daily Newsletter - {current_date}"
         
-        # Lazy load logo
-        if self.logo_base64 is None:
-            self.logo_base64 = self._load_logo()
+        # Use provided branding or defaults
+        if not branding:
+            branding = {'logo_enabled': True, 'logo_path': None}
         
-        logo_html = f'<img src="{self.logo_base64}" alt="Innopower Logo">' if self.logo_base64 else '<h1>AI Daily</h1>'
+        # Load logo with custom path if provided
+        logo_path = branding.get('logo_path')
+        logo_base64 = self._load_logo(logo_path)
+        
+        # Show logo if enabled
+        if branding.get('logo_enabled', True) and logo_base64:
+            logo_html = f'<img src="{logo_base64}" alt="Newsletter Logo">'
+        else:
+            logo_html = '<h1>AI Daily</h1>'
         
         return f"""
         <div class="header">

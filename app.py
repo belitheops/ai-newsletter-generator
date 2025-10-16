@@ -227,7 +227,10 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         # Create newsletter title
         newsletter_title = f"{config['name']} - {datetime.now().strftime('%B %d, %Y')}"
         
-        newsletter_html = newsletter_gen.generate_newsletter(top_summaries, title=newsletter_title)
+        # Get branding settings from config
+        branding = config.get('branding', {})
+        
+        newsletter_html = newsletter_gen.generate_newsletter(top_summaries, title=newsletter_title, branding=branding)
         newsletter_markdown = newsletter_gen.generate_markdown(top_summaries)
         
         # Step 5: Save to database
@@ -693,7 +696,64 @@ def show_newsletter_management(scraper, summarizer):
                             key=f"nl_cats_{config['id']}"
                         )
                         
+                        # Branding customization
+                        st.markdown("**🎨 Branding Options:**")
+                        branding = config.get('branding', {})
+                        
+                        col_brand1, col_brand2 = st.columns(2)
+                        with col_brand1:
+                            header_color = st.color_picker(
+                                "Header Background Color",
+                                value=branding.get('header_color', '#000000'),
+                                key=f"nl_header_color_{config['id']}"
+                            )
+                            header_font = st.selectbox(
+                                "Header Font",
+                                options=['Arial, sans-serif', 'Georgia, serif', 'Courier New, monospace', 'Verdana, sans-serif', 'Times New Roman, serif'],
+                                index=0 if branding.get('header_font', 'Arial, sans-serif') == 'Arial, sans-serif' else 1,
+                                key=f"nl_header_font_{config['id']}"
+                            )
+                        with col_brand2:
+                            header_text_color = st.color_picker(
+                                "Header Text Color",
+                                value=branding.get('header_text_color', '#cda600'),
+                                key=f"nl_header_text_color_{config['id']}"
+                            )
+                            logo_enabled = st.checkbox(
+                                "Show Logo",
+                                value=branding.get('logo_enabled', True),
+                                key=f"nl_logo_enabled_{config['id']}"
+                            )
+                        
+                        # Logo upload
+                        logo_file = st.file_uploader(
+                            "Upload Custom Logo (PNG/JPG)",
+                            type=['png', 'jpg', 'jpeg'],
+                            key=f"nl_logo_{config['id']}",
+                            help="Upload a custom logo for your newsletter header"
+                        )
+                        
+                        logo_path = branding.get('logo_path', 'attached_assets/Innopower Logo white background_1760182832027.png')
+                        
+                        # Save uploaded logo if provided
+                        if logo_file:
+                            import os
+                            os.makedirs('attached_assets', exist_ok=True)
+                            logo_path = f"attached_assets/{logo_file.name}"
+                            with open(logo_path, 'wb') as f:
+                                f.write(logo_file.getbuffer())
+                            st.success(f"✅ Logo uploaded: {logo_file.name}")
+                        
                         if st.form_submit_button("💾 Update"):
+                            # Create updated branding object
+                            updated_branding = {
+                                'logo_enabled': logo_enabled,
+                                'logo_path': logo_path,
+                                'header_color': header_color,
+                                'header_text_color': header_text_color,
+                                'header_font': header_font
+                            }
+                            
                             if config_manager.update_config(
                                 config['id'],
                                 name=new_name,
@@ -701,7 +761,8 @@ def show_newsletter_management(scraper, summarizer):
                                 max_stories=new_max,
                                 schedule_time=new_time,
                                 feed_ids=selected_feeds,
-                                category_ids=selected_cats
+                                category_ids=selected_cats,
+                                branding=updated_branding
                             ):
                                 st.success(f"✅ Updated {new_name}")
                                 st.rerun()
