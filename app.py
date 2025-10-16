@@ -411,9 +411,15 @@ def show_feed_management(scraper):
         with st.form("add_feed_form"):
             new_name = st.text_input("Feed Name", placeholder="e.g., AI Weekly News")
             new_url = st.text_input("RSS Feed URL", placeholder="https://example.com/feed.xml")
+            
+            # Get unique categories (hardcoded + existing)
+            default_categories = ["Tech News", "Research", "AI Industry", "Business", "Other"]
+            existing_categories = feed_manager.get_categories()
+            all_categories = sorted(list(set(default_categories + existing_categories)))
+            
             new_category = st.selectbox(
                 "Category", 
-                ["Tech News", "Research", "AI Industry", "Business", "Other"] + feed_manager.get_categories(),
+                all_categories,
                 index=0
             )
             new_enabled = st.checkbox("Enabled", value=True)

@@ -5,8 +5,15 @@
     "description": "Daily AI and technology news digest",
     "enabled": true,
     "feed_ids": [],
-    "category_ids": [],
-    "max_stories": 12,
+    "category_ids": [
+      "ai_policy",
+      "ai_research",
+      "ai_business",
+      "machine_learning",
+      "robotics",
+      "tech_industry"
+    ],
+    "max_stories": 15,
     "schedule_time": "07:00",
     "schedule_enabled": true,
     "sendfox_list_id": null,
@@ -16,7 +23,7 @@
       "accent_color": "#cda600"
     },
     "created_at": "2025-10-14T17:57:28.034190",
-    "updated_at": "2025-10-14T17:57:28.034201"
+    "updated_at": "2025-10-16T13:38:39.689769"
   },
   {
     "id": "ai_research_weekly",
@@ -45,5 +52,27 @@
     },
     "created_at": "2025-10-14T18:07:35.308024",
     "updated_at": "2025-10-14T18:07:35.308035"
+  },
+  {
+    "id": "innopower_indy_daily_entrepreneur_newsletter",
+    "name": "InnoPower Indy Daily Entrepreneur Newsletter",
+    "description": "",
+    "enabled": true,
+    "feed_ids": [],
+    "category_ids": [
+      "trending_news",
+      "founder_lessons"
+    ],
+    "max_stories": 12,
+    "schedule_time": "07:00",
+    "schedule_enabled": false,
+    "sendfox_list_id": null,
+    "branding": {
+      "logo_enabled": true,
+      "header_color": "#000000",
+      "accent_color": "#cda600"
+    },
+    "created_at": "2025-10-16T13:39:58.924949",
+    "updated_at": "2025-10-16T13:39:58.924959"
   }
 ]

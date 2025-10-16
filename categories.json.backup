@@ -64,11 +64,27 @@
     "added_at": "2025-10-14T14:48:58.378193"
   },
   {
-    "id": "another_test_ecofen",
-    "name": "Another Test ECOfeN",
-    "emoji": "🔬",
+    "id": "trending_news",
+    "name": "Trending News",
+    "emoji": "📁",
+    "priority": 8,
+    "enabled": true,
+    "added_at": "2025-10-16T13:35:33.800251"
+  },
+  {
+    "id": "founder_lessons",
+    "name": "Founder Lessons",
+    "emoji": "📁",
     "priority": 9,
     "enabled": true,
-    "added_at": "2025-10-14T15:07:00.817133"
+    "added_at": "2025-10-16T13:36:08.876495"
+  },
+  {
+    "id": "data_and_trends",
+    "name": "Data and Trends",
+    "emoji": "📁",
+    "priority": 10,
+    "enabled": true,
+    "added_at": "2025-10-16T13:40:57.400829"
   }
 ]

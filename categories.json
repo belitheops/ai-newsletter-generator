@@ -62,5 +62,37 @@
     "priority": 999,
     "enabled": true,
     "added_at": "2025-10-14T14:48:58.378193"
+  },
+  {
+    "id": "trending_news",
+    "name": "Trending News",
+    "emoji": "📁",
+    "priority": 8,
+    "enabled": true,
+    "added_at": "2025-10-16T13:35:33.800251"
+  },
+  {
+    "id": "founder_lessons",
+    "name": "Founder Lessons",
+    "emoji": "📁",
+    "priority": 9,
+    "enabled": true,
+    "added_at": "2025-10-16T13:36:08.876495"
+  },
+  {
+    "id": "data_and_trends",
+    "name": "Data and Trends",
+    "emoji": "📁",
+    "priority": 10,
+    "enabled": true,
+    "added_at": "2025-10-16T13:40:57.400829"
+  },
+  {
+    "id": "business_ideas",
+    "name": "Business Ideas",
+    "emoji": "📁",
+    "priority": 11,
+    "enabled": true,
+    "added_at": "2025-10-16T13:41:24.213507"
   }
 ]

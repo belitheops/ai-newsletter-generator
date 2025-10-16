@@ -87,5 +87,14 @@
     "enabled": true,
     "category": "Tech News",
     "added_at": "2025-10-14T14:30:06.228539"
+  },
+  {
+    "id": "axios_ai_feed",
+    "name": "Axios Ai Feed",
+    "url": "https://www.axios.com/technology/automation-and-ai",
+    "type": "rss",
+    "enabled": true,
+    "category": "Tech News",
+    "added_at": "2025-10-15T01:39:03.814016"
   }
 ]
