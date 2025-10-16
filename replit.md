@@ -40,7 +40,7 @@ Preferred communication style: Simple, everyday language.
 - Fallback handling when API unavailable
 
 **Newsletter Generation** (`newsletter.py`)
-- HTML template generation with gradient headers and responsive design
+- HTML template generation with responsive design
 - Markdown format generation for portable, readable exports
 - Stories grouped by category with section headers and emoji icons
 - Category-based organization: preferred categories first, then alphabetical, then "Other"
@@ -48,7 +48,12 @@ Preferred communication style: Simple, everyday language.
 - Plain text version creation for email compatibility
 - Story sorting by impact score within each category
 - Supports both web display and email distribution
-- Innopower branding with custom logo and call-to-action sections
+- Dynamic branding application:
+  - Custom logo embedding via base64 encoding
+  - Header styling with configurable colors (background and text)
+  - Font family customization for headers
+  - CSS injection for personalized newsletter appearance
+  - Falls back to default Innopower branding if not specified
 
 **Email Distribution** (`sendfox_client.py`)
 - SendFox API integration for campaign creation
@@ -106,6 +111,13 @@ Preferred communication style: Simple, everyday language.
 - Archive view displays which config was used for each newsletter
 - Backup system for configuration safety
 - Thread-safe generation via shared lock with scheduler
+- Full branding customization per newsletter:
+  - Custom logo upload (PNG/JPG) stored in attached_assets directory
+  - Header background color customization via color picker
+  - Header text color customization via color picker
+  - Header font selection (Arial, Georgia, Courier, Verdana, Times New Roman)
+  - Logo toggle (show/hide)
+  - All branding settings applied dynamically during newsletter generation
 
 **Shared Resources** (`shared_resources.py`)
 - Persistent threading lock for newsletter generation coordination
