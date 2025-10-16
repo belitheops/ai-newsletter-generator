@@ -134,7 +134,8 @@ class NewsletterScheduler:
             logger.info("Generating newsletter HTML...")
             newsletter_title = f"{config['name']} - {datetime.now().strftime('%B %d, %Y')}"
             branding = config.get('branding', {})
-            newsletter_html = self.newsletter_gen.generate_newsletter(top_summaries, title=newsletter_title, branding=branding)
+            cta_buttons = config.get('cta_buttons', [])
+            newsletter_html = self.newsletter_gen.generate_newsletter(top_summaries, title=newsletter_title, branding=branding, cta_buttons=cta_buttons)
             
             # Step 5: Save to database
             newsletter_data = {

@@ -227,10 +227,11 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         # Create newsletter title
         newsletter_title = f"{config['name']} - {datetime.now().strftime('%B %d, %Y')}"
         
-        # Get branding settings from config
+        # Get branding settings and CTA buttons from config
         branding = config.get('branding', {})
+        cta_buttons = config.get('cta_buttons', [])
         
-        newsletter_html = newsletter_gen.generate_newsletter(top_summaries, title=newsletter_title, branding=branding)
+        newsletter_html = newsletter_gen.generate_newsletter(top_summaries, title=newsletter_title, branding=branding, cta_buttons=cta_buttons)
         newsletter_markdown = newsletter_gen.generate_markdown(top_summaries)
         
         # Step 5: Save to database
