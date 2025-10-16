@@ -96,5 +96,131 @@
     "enabled": true,
     "category": "Tech News",
     "added_at": "2025-10-15T01:39:03.814016"
+  },
+  {
+    "id": "product_hunt",
+    "name": "Product Hunt",
+    "url": "https://www.producthunt.com/feed",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:18:41.231862"
+  },
+  {
+    "id": "entrepreneur.com",
+    "name": "Entrepreneur.com",
+    "url": "https://www.entrepreneur.com/latest.rss",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:19:56.825503"
+  },
+  {
+    "id": "inc.",
+    "name": "Inc.",
+    "url": "https://www.inc.com/rss/entrepreneurs.xml",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:20:29.124341"
+  },
+  {
+    "id": "forbes_entrepreneurs",
+    "name": "Forbes Entrepreneurs",
+    "url": "https://www.forbes.com/entrepreneurs/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:21:16.203799"
+  },
+  {
+    "id": "harvard_business",
+    "name": "Harvard Business",
+    "url": "https://feeds.hbr.org/harvardbusiness",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:21:50.573681"
+  },
+  {
+    "id": "fast_company",
+    "name": "Fast Company",
+    "url": "https://www.fastcompany.com/feed",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:22:10.815951"
+  },
+  {
+    "id": "crunch_base",
+    "name": "Crunch Base",
+    "url": "https://news.crunchbase.com/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:23:16.254244"
+  },
+  {
+    "id": "tech_crunch",
+    "name": "Tech Crunch",
+    "url": "https://techcrunch.com/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:23:56.275097"
+  },
+  {
+    "id": "ycombinator",
+    "name": "YCombinator",
+    "url": "https://www.ycombinator.com/blog/rss/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:24:28.532252"
+  },
+  {
+    "id": "startups.com",
+    "name": "Startups.com",
+    "url": "https://www.startups.com/feed",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:25:10.975394"
+  },
+  {
+    "id": "foundrs.com",
+    "name": "Foundrs.com",
+    "url": "https://foundr.com/feed",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:25:54.151587"
+  },
+  {
+    "id": "indie_hackers",
+    "name": "Indie Hackers",
+    "url": "https://www.indiehackers.com/feed",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:26:20.898676"
+  },
+  {
+    "id": "side_hustle_nation",
+    "name": "Side Hustle Nation",
+    "url": "https://www.sidehustlenation.com/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:26:50.628678"
+  },
+  {
+    "id": "cb_insights",
+    "name": "CB Insights",
+    "url": "https://www.cbinsights.com/research/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:27:25.630301"
   }
 ]

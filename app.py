@@ -412,15 +412,26 @@ def show_feed_management(scraper):
             new_name = st.text_input("Feed Name", placeholder="e.g., AI Weekly News")
             new_url = st.text_input("RSS Feed URL", placeholder="https://example.com/feed.xml")
             
-            # Get unique categories (hardcoded + existing)
-            default_categories = ["Tech News", "Research", "AI Industry", "Business", "Other"]
-            existing_categories = feed_manager.get_categories()
-            all_categories = sorted(list(set(default_categories + existing_categories)))
+            # Get categories from Category Management system
+            category_manager = CategoryManager()
+            all_categories_data = category_manager.get_all_categories()
+            
+            # Extract category names and add existing feed categories for backward compatibility
+            category_names = [cat['name'] for cat in all_categories_data if cat.get('enabled', True)]
+            existing_feed_categories = feed_manager.get_categories()
+            
+            # Combine and deduplicate
+            all_categories = sorted(list(set(category_names + existing_feed_categories)))
+            
+            if not all_categories:
+                st.warning("⚠️ No categories available. Please add categories in the Category Management page first.")
+                all_categories = ["Other"]  # Fallback
             
             new_category = st.selectbox(
                 "Category", 
                 all_categories,
-                index=0
+                index=0,
+                help="Categories are managed in the Category Management page"
             )
             new_enabled = st.checkbox("Enabled", value=True)
             
