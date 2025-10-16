@@ -744,6 +744,27 @@ def show_newsletter_management(scraper, summarizer):
                                 f.write(logo_file.getbuffer())
                             st.success(f"✅ Logo uploaded: {logo_file.name}")
                         
+                        # CTA Buttons customization
+                        st.markdown("**🔘 Call-to-Action Buttons:**")
+                        cta_buttons = config.get('cta_buttons', [
+                            {'text': 'Visit Our Website', 'link': 'https://example.com'},
+                            {'text': 'Subscribe for More', 'link': 'https://example.com/subscribe'},
+                            {'text': 'Contact Us', 'link': 'https://example.com/contact'}
+                        ])
+                        
+                        # Ensure we have exactly 3 buttons
+                        while len(cta_buttons) < 3:
+                            cta_buttons.append({'text': '', 'link': ''})
+                        
+                        cta1_text = st.text_input("Button 1 Text", value=cta_buttons[0].get('text', ''), key=f"nl_cta1_text_{config['id']}")
+                        cta1_link = st.text_input("Button 1 Link", value=cta_buttons[0].get('link', ''), key=f"nl_cta1_link_{config['id']}")
+                        
+                        cta2_text = st.text_input("Button 2 Text", value=cta_buttons[1].get('text', ''), key=f"nl_cta2_text_{config['id']}")
+                        cta2_link = st.text_input("Button 2 Link", value=cta_buttons[1].get('link', ''), key=f"nl_cta2_link_{config['id']}")
+                        
+                        cta3_text = st.text_input("Button 3 Text", value=cta_buttons[2].get('text', ''), key=f"nl_cta3_text_{config['id']}")
+                        cta3_link = st.text_input("Button 3 Link", value=cta_buttons[2].get('link', ''), key=f"nl_cta3_link_{config['id']}")
+                        
                         if st.form_submit_button("💾 Update"):
                             # Create updated branding object
                             updated_branding = {
@@ -754,6 +775,13 @@ def show_newsletter_management(scraper, summarizer):
                                 'header_font': header_font
                             }
                             
+                            # Create updated CTA buttons array
+                            updated_cta_buttons = [
+                                {'text': cta1_text, 'link': cta1_link},
+                                {'text': cta2_text, 'link': cta2_link},
+                                {'text': cta3_text, 'link': cta3_link}
+                            ]
+                            
                             if config_manager.update_config(
                                 config['id'],
                                 name=new_name,
@@ -762,7 +790,8 @@ def show_newsletter_management(scraper, summarizer):
                                 schedule_time=new_time,
                                 feed_ids=selected_feeds,
                                 category_ids=selected_cats,
-                                branding=updated_branding
+                                branding=updated_branding,
+                                cta_buttons=updated_cta_buttons
                             ):
                                 st.success(f"✅ Updated {new_name}")
                                 st.rerun()
