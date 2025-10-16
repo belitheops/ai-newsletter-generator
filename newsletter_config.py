@@ -52,6 +52,11 @@ class NewsletterConfigManager:
                 "header_text_color": "#cda600",
                 "header_font": "Arial, sans-serif"
             },
+            "cta_buttons": [
+                {"text": "Visit Our Website", "link": "https://example.com"},
+                {"text": "Subscribe for More", "link": "https://example.com/subscribe"},
+                {"text": "Contact Us", "link": "https://example.com/contact"}
+            ],
             "created_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat()
         }
@@ -129,6 +134,11 @@ class NewsletterConfigManager:
                     'header_text_color': '#cda600',
                     'header_font': 'Arial, sans-serif'
                 },
+                'cta_buttons': [
+                    {'text': 'Visit Our Website', 'link': 'https://example.com'},
+                    {'text': 'Subscribe for More', 'link': 'https://example.com/subscribe'},
+                    {'text': 'Contact Us', 'link': 'https://example.com/contact'}
+                ],
                 'created_at': datetime.now().isoformat(),
                 'updated_at': datetime.now().isoformat()
             }
@@ -153,7 +163,7 @@ class NewsletterConfigManager:
             # Update fields
             for key, value in kwargs.items():
                 if key in ['name', 'description', 'enabled', 'feed_ids', 'category_ids', 
-                          'max_stories', 'schedule_time', 'schedule_enabled', 'sendfox_list_id', 'branding']:
+                          'max_stories', 'schedule_time', 'schedule_enabled', 'sendfox_list_id', 'branding', 'cta_buttons']:
                     config[key] = value
             
             config['updated_at'] = datetime.now().isoformat()
