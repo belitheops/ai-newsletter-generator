@@ -69,6 +69,19 @@ class NewsletterScheduler:
             return
         
         try:
+            # Load newsletter configuration
+            from newsletter_config import NewsletterConfigManager
+            config_manager = NewsletterConfigManager()
+            configs = config_manager.get_all_configs()
+            
+            # Use first enabled config or default
+            config = next((c for c in configs if c.get('enabled', True)), configs[0] if configs else None)
+            if not config:
+                logger.error("No newsletter configuration found. Cannot generate newsletter.")
+                return
+            
+            logger.info(f"Using newsletter config: {config['name']}")
+            
             # Step 1: Scrape articles
             logger.info("Scraping articles from news sources...")
             articles = self.scraper.scrape_all_sources()
@@ -76,7 +89,7 @@ class NewsletterScheduler:
             
             if not articles:
                 logger.warning("No articles scraped. Skipping newsletter generation.")
-                self._save_empty_newsletter("No articles found during scraping")
+                self._save_empty_newsletter("No articles found during scraping", config['name'])
                 return
             
             # Step 2: Deduplicate stories
@@ -86,7 +99,7 @@ class NewsletterScheduler:
             
             if not unique_stories:
                 logger.warning("No unique stories after deduplication. Skipping newsletter generation.")
-                self._save_empty_newsletter("No unique stories after deduplication")
+                self._save_empty_newsletter("No unique stories after deduplication", config['name'])
                 return
             
             # Step 3: Summarize articles
@@ -108,8 +121,8 @@ class NewsletterScheduler:
             
             logger.info(f"Generated {len(summaries)} summaries")
             
-            # Step 3.5: Select top 12 stories by impact score
-            MAX_STORIES = 12
+            # Step 3.5: Select top stories by impact score (using config max_stories)
+            MAX_STORIES = config.get('max_stories', 12)
             if len(summaries) > MAX_STORIES:
                 sorted_summaries = sorted(summaries, key=lambda x: x.get('impact_score', 0), reverse=True)
                 top_summaries = sorted_summaries[:MAX_STORIES]
@@ -119,11 +132,12 @@ class NewsletterScheduler:
             
             # Step 4: Generate newsletter
             logger.info("Generating newsletter HTML...")
-            newsletter_html = self.newsletter_gen.generate_newsletter(top_summaries)
+            newsletter_title = f"{config['name']} - {datetime.now().strftime('%B %d, %Y')}"
+            newsletter_html = self.newsletter_gen.generate_newsletter(top_summaries, title=newsletter_title)
             
             # Step 5: Save to database
             newsletter_data = {
-                'title': f"AI Daily Newsletter - {datetime.now().strftime('%B %d, %Y')}",
+                'title': newsletter_title,
                 'html_content': newsletter_html,
                 'story_count': len(top_summaries),
                 'created_at': datetime.now().isoformat(),
@@ -152,11 +166,11 @@ class NewsletterScheduler:
             # Always release the lock
             newsletter_generation_lock.release()
 
-    def _save_empty_newsletter(self, reason: str):
+    def _save_empty_newsletter(self, reason: str, config_name: str = "AI Daily Newsletter"):
         """Save a record when no newsletter could be generated"""
         try:
             newsletter_data = {
-                'title': f"AI Daily Newsletter - {datetime.now().strftime('%B %d, %Y')} (Empty)",
+                'title': f"{config_name} - {datetime.now().strftime('%B %d, %Y')} (Empty)",
                 'html_content': self.newsletter_gen._generate_empty_newsletter(),
                 'story_count': 0,
                 'created_at': datetime.now().isoformat(),
