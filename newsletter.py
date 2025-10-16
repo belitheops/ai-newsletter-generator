@@ -256,7 +256,7 @@ class NewsletterGenerator:
         </style>
         """
 
-    def generate_newsletter(self, summarized_stories: List[Dict], title: str = None, branding: Dict = None) -> str:
+    def generate_newsletter(self, summarized_stories: List[Dict], title: str = None, branding: Dict = None, cta_buttons: List[Dict] = None) -> str:
         """Generate complete HTML newsletter from summarized stories"""
         if not summarized_stories:
             return self._generate_empty_newsletter()
@@ -284,6 +284,7 @@ class NewsletterGenerator:
         header_html = self._generate_header(sorted_stories, title, branding)
         stats_html = self._generate_stats(sorted_stories)
         stories_html = self._generate_stories_html(sorted_stories)
+        cta_html = self._generate_cta_buttons(cta_buttons, branding)
         footer_html = self._generate_footer()
         
         # Generate custom styles with branding colors and fonts
@@ -306,6 +307,7 @@ class NewsletterGenerator:
                 <div class="content">
                     {stats_html}
                     {stories_html}
+                    {cta_html}
                 </div>
                 {footer_html}
             </div>
@@ -577,6 +579,35 @@ class NewsletterGenerator:
         </div>
         """
 
+    def _generate_cta_buttons(self, cta_buttons: List[Dict] = None, branding: Dict = None) -> str:
+        """Generate CTA buttons section"""
+        if not cta_buttons:
+            return ""
+        
+        # Get button color from branding (use header_text_color as button color)
+        button_color = branding.get('header_text_color', '#cda600') if branding else '#cda600'
+        
+        # Filter out empty buttons
+        active_buttons = [btn for btn in cta_buttons if btn.get('text') and btn.get('link')]
+        
+        if not active_buttons:
+            return ""
+        
+        # Generate button HTML
+        buttons_html = ""
+        for button in active_buttons:
+            buttons_html += f"""
+            <a href="{button['link']}" class="cta-button" style="background-color: {button_color}; color: #ffffff; text-decoration: none; padding: 12px 30px; border-radius: 5px; display: inline-block; margin: 10px 5px; font-weight: bold;">
+                {button['text']}
+            </a>
+            """
+        
+        return f"""
+        <div style="text-align: center; margin: 40px 0; padding: 30px 0; border-top: 2px solid #eee; border-bottom: 2px solid #eee;">
+            {buttons_html}
+        </div>
+        """
+    
     def _generate_footer(self) -> str:
         """Generate newsletter footer"""
         current_time = datetime.now().strftime('%I:%M %p %Z')
