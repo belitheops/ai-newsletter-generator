@@ -58,10 +58,27 @@
     "name": "InnoPower Indy Daily Entrepreneur Newsletter",
     "description": "",
     "enabled": true,
-    "feed_ids": [],
+    "feed_ids": [
+      "cb_insights",
+      "side_hustle_nation",
+      "indie_hackers",
+      "foundrs.com",
+      "startups.com",
+      "ycombinator",
+      "tech_crunch",
+      "crunch_base",
+      "fast_company",
+      "harvard_business",
+      "forbes_entrepreneurs",
+      "inc.",
+      "entrepreneur.com",
+      "product_hunt"
+    ],
     "category_ids": [
       "trending_news",
-      "founder_lessons"
+      "founder_lessons",
+      "business_ideas",
+      "data_and_trends"
     ],
     "max_stories": 12,
     "schedule_time": "07:00",
@@ -73,6 +90,6 @@
       "accent_color": "#cda600"
     },
     "created_at": "2025-10-16T13:39:58.924949",
-    "updated_at": "2025-10-16T13:39:58.924959"
+    "updated_at": "2025-10-16T18:43:37.451598"
   }
 ]

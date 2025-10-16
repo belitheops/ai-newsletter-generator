@@ -223,12 +223,16 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         # Step 4: Generate newsletter
         status_text.text("📄 Generating newsletter HTML and Markdown...")
         progress_bar.progress(0.85)
-        newsletter_html = newsletter_gen.generate_newsletter(top_summaries)
+        
+        # Create newsletter title
+        newsletter_title = f"{config['name']} - {datetime.now().strftime('%B %d, %Y')}"
+        
+        newsletter_html = newsletter_gen.generate_newsletter(top_summaries, title=newsletter_title)
         newsletter_markdown = newsletter_gen.generate_markdown(top_summaries)
         
         # Step 5: Save to database
         newsletter_data = {
-            'title': f"{config['name']} - {datetime.now().strftime('%B %d, %Y')}",
+            'title': newsletter_title,
             'html_content': newsletter_html,
             'markdown_content': newsletter_markdown,
             'story_count': len(top_summaries),

@@ -256,7 +256,7 @@ class NewsletterGenerator:
         </style>
         """
 
-    def generate_newsletter(self, summarized_stories: List[Dict]) -> str:
+    def generate_newsletter(self, summarized_stories: List[Dict], title: str = None) -> str:
         """Generate complete HTML newsletter from summarized stories"""
         if not summarized_stories:
             return self._generate_empty_newsletter()
@@ -266,8 +266,12 @@ class NewsletterGenerator:
                               key=lambda x: x.get('impact_score', 0), 
                               reverse=True)
         
+        # Use provided title or generate default
+        if not title:
+            title = f"AI Daily Newsletter - {datetime.now().strftime('%B %d, %Y')}"
+        
         # Generate newsletter components
-        header_html = self._generate_header(sorted_stories)
+        header_html = self._generate_header(sorted_stories, title)
         stats_html = self._generate_stats(sorted_stories)
         stories_html = self._generate_stories_html(sorted_stories)
         footer_html = self._generate_footer()
@@ -279,7 +283,7 @@ class NewsletterGenerator:
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>AI Daily Newsletter - {datetime.now().strftime('%B %d, %Y')}</title>
+            <title>{title}</title>
             {self.template_style}
         </head>
         <body>
@@ -312,10 +316,14 @@ class NewsletterGenerator:
             logger.error(f"Error loading logo: {e}")
             return ""
     
-    def _generate_header(self, stories: List[Dict]) -> str:
+    def _generate_header(self, stories: List[Dict], title: str = None) -> str:
         """Generate newsletter header"""
         current_date = datetime.now().strftime('%B %d, %Y')
         story_count = len(stories)
+        
+        # Use provided title or generate default
+        if not title:
+            title = f"AI Daily Newsletter - {current_date}"
         
         # Lazy load logo
         if self.logo_base64 is None:
@@ -326,7 +334,7 @@ class NewsletterGenerator:
         return f"""
         <div class="header">
             {logo_html}
-            <p>Your curated AI & technology newsletter for {current_date}</p>
+            <p>{title}</p>
         </div>
         """
 
