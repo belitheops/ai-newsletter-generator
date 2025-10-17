@@ -118,6 +118,12 @@ Preferred communication style: Simple, everyday language.
   - Header font selection (Arial, Georgia, Courier, Verdana, Times New Roman)
   - Logo toggle (show/hide)
   - All branding settings applied dynamically during newsletter generation
+- Call-to-Action (CTA) buttons customization:
+  - 3 customizable CTA buttons per newsletter
+  - Each button has text and link properties
+  - Buttons styled with header text color from branding
+  - Empty buttons automatically hidden from display
+  - Buttons appear centered between stories and footer
 
 **Shared Resources** (`shared_resources.py`)
 - Persistent threading lock for newsletter generation coordination
