@@ -139,9 +139,9 @@ def show_generate_newsletter(scraper, deduplicator, summarizer, newsletter_gen, 
             st.info(f"ℹ️ {selected_config['description']}")
     
     if st.button("🚀 Generate Newsletter Now", type="primary"):
-        generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db, selected_config_id)
+        generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_gen, resend, db, selected_config_id)
 
-def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db, config_id=None):
+def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_gen, resend, db, config_id=None):
     progress_bar = st.progress(0)
     status_text = st.empty()
     
@@ -855,12 +855,21 @@ def show_configuration():
     
     st.subheader("API Keys")
     openai_key = os.getenv("OPENAI_API_KEY", "")
-    sendfox_token = os.getenv("SENDFOX_API_TOKEN", "")
+    
+    # Check Resend status via the connector
+    resend_client = ResendClient()
+    resend_status = resend_client.get_status()
     
     st.text_input("OpenAI API Key", value="***" if openai_key else "", 
                  help="Set via OPENAI_API_KEY environment variable", disabled=True)
-    st.text_input("SendFox API Token", value="***" if sendfox_token else "", 
-                 help="Set via SENDFOX_API_TOKEN environment variable", disabled=True)
+    
+    st.markdown("**Resend Email Service**")
+    if resend_status['ready']:
+        st.success(f"✅ Connected - From: {resend_status['from_email']}")
+    else:
+        st.warning("⚠️ Not configured - Set up via Replit integrations")
+    
+    st.info("💡 **To send newsletters**: Uncomment the email sending code in app.py and scheduler.py, then add your recipient email addresses.")
     
     st.subheader("News Sources")
     sources = [

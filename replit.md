@@ -62,10 +62,13 @@ Preferred communication style: Simple, everyday language.
   - CTA buttons interspersed between story categories
   - Consistent footer with branding and generation date
 
-**Email Distribution** (`sendfox_client.py`)
-- SendFox API integration for campaign creation
-- Campaign sending to subscriber lists
+**Email Distribution** (`resend_client.py`)
+- Resend API integration via Replit connector
+- Secure credential management through Replit integrations
+- Simple email sending with HTML content support
+- Test email functionality for verification
 - Comprehensive error handling and logging
+- Note: List management handled separately from email sending
 
 **Scheduling System** (`scheduler.py`)
 - Schedule library for daily 7 AM newsletter generation
@@ -181,10 +184,12 @@ Preferred communication style: Simple, everyday language.
 - Configuration: Requires `OPENAI_API_KEY` environment variable
 - Usage: Generates summaries, key points, impact scores, and categories
 
-**SendFox API**
+**Resend Email API**
 - Purpose: Email newsletter distribution
-- Configuration: Requires `SENDFOX_API_TOKEN` environment variable
-- Functionality: Campaign creation and sending to subscriber lists
+- Configuration: Managed via Replit connector integration
+- Authentication: Automatic API key and from_email management
+- Functionality: Transactional email sending with HTML support
+- Note: Requires recipient email list configuration in code
 
 ### Python Libraries
 
