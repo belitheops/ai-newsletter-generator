@@ -41,7 +41,7 @@ Preferred communication style: Simple, everyday language.
 
 **Newsletter Generation** (`newsletter.py`)
 - HTML template generation with responsive design
-- Markdown format generation for portable, readable exports
+- Markdown format generation following standardized template structure
 - Stories grouped by category with section headers and emoji icons
 - Category-based organization: preferred categories first, then alphabetical, then "Other"
 - Robust category handling - normalizes non-string/falsy categories to "Other"
@@ -54,6 +54,13 @@ Preferred communication style: Simple, everyday language.
   - Font family customization for headers
   - CSS injection for personalized newsletter appearance
   - Falls back to default Innopower branding if not specified
+- Markdown template format:
+  - Clean header with newsletter title and subtitle
+  - Story count display
+  - Category sections with emoji headers
+  - Each story shows: title, impact score, summary, key points, and article link
+  - CTA buttons interspersed between story categories
+  - Consistent footer with branding and generation date
 
 **Email Distribution** (`sendfox_client.py`)
 - SendFox API integration for campaign creation
