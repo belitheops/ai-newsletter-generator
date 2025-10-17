@@ -232,7 +232,7 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         cta_buttons = config.get('cta_buttons', [])
         
         newsletter_html = newsletter_gen.generate_newsletter(top_summaries, title=newsletter_title, branding=branding, cta_buttons=cta_buttons)
-        newsletter_markdown = newsletter_gen.generate_markdown(top_summaries)
+        newsletter_markdown = newsletter_gen.generate_markdown(top_summaries, title=newsletter_title, cta_buttons=cta_buttons)
         
         # Step 5: Save to database
         newsletter_data = {
