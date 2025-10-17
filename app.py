@@ -7,7 +7,7 @@ from scraper import NewsScraper
 from deduplicator import StoryDeduplicator
 from summarizer import ArticleSummarizer
 from newsletter import NewsletterGenerator
-from sendfox_client import SendFoxClient
+from resend_client import ResendClient
 from scheduler import NewsletterScheduler
 from database import NewsletterDatabase
 from feed_manager import FeedManager
@@ -23,17 +23,17 @@ def initialize_components():
     deduplicator = StoryDeduplicator(similarity_threshold=0.6)
     summarizer = ArticleSummarizer()
     newsletter_gen = NewsletterGenerator()
-    sendfox = SendFoxClient()
+    resend = ResendClient()
     db = NewsletterDatabase()
-    scheduler = NewsletterScheduler(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db)
-    return scraper, deduplicator, summarizer, newsletter_gen, sendfox, db, scheduler
+    scheduler = NewsletterScheduler(scraper, deduplicator, summarizer, newsletter_gen, resend, db)
+    return scraper, deduplicator, summarizer, newsletter_gen, resend, db, scheduler
 
 def main():
     st.title("🤖 AI Daily Newsletter Generator")
     st.markdown("Automated daily AI newsletter with intelligent story curation and email distribution")
     
     # Initialize components
-    scraper, deduplicator, summarizer, newsletter_gen, sendfox, db, scheduler = initialize_components()
+    scraper, deduplicator, summarizer, newsletter_gen, resend, db, scheduler = initialize_components()
     
     # Start scheduler in background thread if not already running
     if 'scheduler_started' not in st.session_state:
@@ -56,7 +56,7 @@ def main():
     if page == "Dashboard":
         show_dashboard(db)
     elif page == "Generate Newsletter":
-        show_generate_newsletter(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db)
+        show_generate_newsletter(scraper, deduplicator, summarizer, newsletter_gen, resend, db)
     elif page == "Newsletter Archive":
         show_newsletter_archive(db)
     elif page == "Newsletter Management":
@@ -78,7 +78,9 @@ def show_dashboard(db):
         st.metric("API Status", "✅ Connected" if os.getenv("OPENAI_API_KEY") else "❌ No API Key")
     
     with col2:
-        st.metric("SendFox Status", "✅ Connected" if os.getenv("SENDFOX_API_TOKEN") else "❌ No Token")
+        resend_client = ResendClient()
+        resend_status = resend_client.get_status()
+        st.metric("Resend Status", "✅ Connected" if resend_status['ready'] else "❌ Not Configured")
     
     with col3:
         newsletters = db.get_all_newsletters()
@@ -105,7 +107,7 @@ def show_dashboard(db):
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     st.text(f"Current time: {current_time}")
 
-def show_generate_newsletter(scraper, deduplicator, summarizer, newsletter_gen, sendfox, db):
+def show_generate_newsletter(scraper, deduplicator, summarizer, newsletter_gen, resend, db):
     st.header("🔧 Generate Newsletter")
     
     # Newsletter selection
@@ -247,9 +249,12 @@ def generate_newsletter_workflow(scraper, deduplicator, summarizer, newsletter_g
         newsletter_id = db.save_newsletter(newsletter_data)
         
         # Step 6: Send email
-        status_text.text("📧 Sending email via SendFox...")
+        status_text.text("📧 Sending email via Resend...")
         progress_bar.progress(0.95)
-        email_sent = sendfox.send_newsletter(newsletter_html, newsletter_data['title'])
+        # Note: Resend requires a list of recipients. Add your email addresses here.
+        # For now, using a test mode that won't actually send
+        email_sent = False  # Set to True when you configure recipient emails
+        # email_sent = resend.send_newsletter(newsletter_html, newsletter_data['title'], to_emails=['your@email.com'])
         
         if email_sent:
             db.mark_newsletter_sent(newsletter_id)

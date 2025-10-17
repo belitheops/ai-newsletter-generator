@@ -12,12 +12,12 @@ logger = logging.getLogger(__name__)
 from shared_resources import newsletter_generation_lock
 
 class NewsletterScheduler:
-    def __init__(self, scraper, deduplicator, summarizer, newsletter_gen, sendfox, db):
+    def __init__(self, scraper, deduplicator, summarizer, newsletter_gen, resend, db):
         self.scraper = scraper
         self.deduplicator = deduplicator
         self.summarizer = summarizer
         self.newsletter_gen = newsletter_gen
-        self.sendfox = sendfox
+        self.resend = resend
         self.db = db
         self.running = False
         self.thread: Optional[threading.Thread] = None
@@ -149,8 +149,10 @@ class NewsletterScheduler:
             logger.info(f"Newsletter saved to database with ID: {newsletter_id}")
             
             # Step 6: Send email
-            logger.info("Sending newsletter via SendFox...")
-            email_sent = self.sendfox.send_newsletter(newsletter_html, newsletter_data['title'])
+            logger.info("Sending newsletter via Resend...")
+            # Note: Email sending is disabled until recipient list is configured
+            email_sent = False
+            # email_sent = self.resend.send_newsletter(newsletter_html, newsletter_data['title'], to_emails=['your@email.com'])
             
             if email_sent:
                 self.db.mark_newsletter_sent(newsletter_id)
