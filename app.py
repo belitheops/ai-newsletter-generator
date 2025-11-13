@@ -14,6 +14,7 @@ from feed_manager import FeedManager
 from category_manager import CategoryManager
 from newsletter_config import NewsletterConfigManager
 from shared_resources import newsletter_generation_lock
+from user_database import UserDatabase
 import json
 
 # Initialize components
@@ -26,26 +27,133 @@ def initialize_components():
     resend = ResendClient()
     db = NewsletterDatabase()
     scheduler = NewsletterScheduler(scraper, deduplicator, summarizer, newsletter_gen, resend, db)
-    return scraper, deduplicator, summarizer, newsletter_gen, resend, db, scheduler
+    user_db = UserDatabase()
+    return scraper, deduplicator, summarizer, newsletter_gen, resend, db, scheduler, user_db
+
+def initialize_session_state():
+    """Initialize session state variables for authentication"""
+    if 'authenticated' not in st.session_state:
+        st.session_state.authenticated = False
+    if 'user_data' not in st.session_state:
+        st.session_state.user_data = None
+    if 'show_registration' not in st.session_state:
+        st.session_state.show_registration = False
+
+def show_login_page(user_db):
+    """Display login and registration page"""
+    st.title("🔐 AI Newsletter Generator - Login")
+
+    # Toggle between login and registration
+    if not st.session_state.show_registration:
+        st.subheader("Login to Your Account")
+
+        with st.form("login_form"):
+            username = st.text_input("Username", key="login_username")
+            password = st.text_input("Password", type="password", key="login_password")
+
+            col1, col2 = st.columns(2)
+            with col1:
+                submit = st.form_submit_button("Login", type="primary", use_container_width=True)
+            with col2:
+                register = st.form_submit_button("Create Account", use_container_width=True)
+
+            if submit:
+                if not username or not password:
+                    st.error("Please enter both username and password")
+                else:
+                    user_data = user_db.authenticate_user(username, password)
+                    if user_data:
+                        st.session_state.authenticated = True
+                        st.session_state.user_data = user_data
+                        st.success(f"Welcome back, {user_data['username']}!")
+                        st.rerun()
+                    else:
+                        st.error("Invalid username or password")
+
+            if register:
+                st.session_state.show_registration = True
+                st.rerun()
+
+    else:
+        st.subheader("Create New Account")
+
+        with st.form("registration_form"):
+            full_name = st.text_input("Full Name (optional)", key="reg_full_name")
+            username = st.text_input("Username", key="reg_username",
+                                    help="At least 3 characters, letters, numbers, hyphens, and underscores only")
+            email = st.text_input("Email", key="reg_email")
+            password = st.text_input("Password", type="password", key="reg_password",
+                                    help="At least 8 characters with uppercase, lowercase, and digit")
+            password_confirm = st.text_input("Confirm Password", type="password", key="reg_password_confirm")
+
+            col1, col2 = st.columns(2)
+            with col1:
+                submit = st.form_submit_button("Create Account", type="primary", use_container_width=True)
+            with col2:
+                back = st.form_submit_button("Back to Login", use_container_width=True)
+
+            if submit:
+                if not username or not email or not password:
+                    st.error("Please fill in all required fields")
+                elif password != password_confirm:
+                    st.error("Passwords do not match")
+                else:
+                    success, message = user_db.create_user(username, email, password, full_name)
+                    if success:
+                        st.success(message)
+                        st.info("Please login with your new account")
+                        st.session_state.show_registration = False
+                        st.rerun()
+                    else:
+                        st.error(message)
+
+            if back:
+                st.session_state.show_registration = False
+                st.rerun()
+
+    # Show user count
+    st.markdown("---")
+    user_count = user_db.get_active_user_count()
+    st.caption(f"Total active users: {user_count}")
 
 def main():
+    # Initialize session state
+    initialize_session_state()
+
+    # Initialize components
+    scraper, deduplicator, summarizer, newsletter_gen, resend, db, scheduler, user_db = initialize_components()
+
+    # Check authentication
+    if not st.session_state.authenticated:
+        show_login_page(user_db)
+        return
+
+    # User is authenticated - show main app
     st.title("🤖 AI Daily Newsletter Generator")
     st.markdown("Automated daily AI newsletter with intelligent story curation and email distribution")
-    
-    # Initialize components
-    scraper, deduplicator, summarizer, newsletter_gen, resend, db, scheduler = initialize_components()
-    
+
     # Start scheduler in background thread if not already running
     if 'scheduler_started' not in st.session_state:
         scheduler_thread = threading.Thread(target=scheduler.start, daemon=True)
         scheduler_thread.start()
         st.session_state.scheduler_started = True
-    
+
     # Sidebar navigation
     st.sidebar.title("Navigation")
+
+    # Show logged in user info
+    if st.session_state.user_data:
+        st.sidebar.markdown("---")
+        st.sidebar.markdown(f"**Logged in as:** {st.session_state.user_data['username']}")
+        if st.sidebar.button("🚪 Logout", use_container_width=True):
+            st.session_state.authenticated = False
+            st.session_state.user_data = None
+            st.rerun()
+        st.sidebar.markdown("---")
+
     page = st.sidebar.selectbox("Choose a page", [
-        "Dashboard", 
-        "Generate Newsletter", 
+        "Dashboard",
+        "Generate Newsletter",
         "Newsletter Archive",
         "Newsletter Management",
         "RSS Feed Management",
