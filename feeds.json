@@ -222,5 +222,14 @@
     "enabled": true,
     "category": "Business",
     "added_at": "2025-10-16T16:27:25.630301"
+  },
+  {
+    "id": "rfp_db",
+    "name": "RFP DB",
+    "url": "https://www.rfpdb.com/view/feed/identifier/d41d8cd98f00.rss",
+    "type": "rss",
+    "enabled": true,
+    "category": "Contract",
+    "added_at": "2025-10-31T18:56:02.355802"
   }
 ]

@@ -213,5 +213,14 @@
     "enabled": true,
     "category": "Business",
     "added_at": "2025-10-16T16:26:50.628678"
+  },
+  {
+    "id": "cb_insights",
+    "name": "CB Insights",
+    "url": "https://www.cbinsights.com/research/feed/",
+    "type": "rss",
+    "enabled": true,
+    "category": "Business",
+    "added_at": "2025-10-16T16:27:25.630301"
   }
 ]

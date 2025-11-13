@@ -86,5 +86,13 @@
     "priority": 10,
     "enabled": true,
     "added_at": "2025-10-16T13:40:57.400829"
+  },
+  {
+    "id": "business_ideas",
+    "name": "Business Ideas",
+    "emoji": "📁",
+    "priority": 11,
+    "enabled": true,
+    "added_at": "2025-10-16T13:41:24.213507"
   }
 ]

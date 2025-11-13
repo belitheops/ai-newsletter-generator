@@ -107,5 +107,44 @@
     },
     "created_at": "2025-10-16T13:39:58.924949",
     "updated_at": "2025-10-16T18:43:37.451598"
+  },
+  {
+    "id": "rfp_db_test",
+    "name": "RFP DB Test",
+    "description": "",
+    "enabled": true,
+    "feed_ids": [
+      "rfp_db"
+    ],
+    "category_ids": [
+      "contract"
+    ],
+    "max_stories": 12,
+    "schedule_time": "07:00",
+    "schedule_enabled": false,
+    "sendfox_list_id": null,
+    "branding": {
+      "logo_enabled": true,
+      "logo_path": "attached_assets/Innopower Logo white background_1760182832027.png",
+      "header_color": "#000000",
+      "header_text_color": "#cda600",
+      "header_font": "Arial, sans-serif"
+    },
+    "cta_buttons": [
+      {
+        "text": "Visit Our Website",
+        "link": "https://example.com"
+      },
+      {
+        "text": "Subscribe for More",
+        "link": "https://example.com/subscribe"
+      },
+      {
+        "text": "Contact Us",
+        "link": "https://example.com/contact"
+      }
+    ],
+    "created_at": "2025-10-31T18:56:51.860898",
+    "updated_at": "2025-10-31T18:56:51.860909"
   }
 ]
