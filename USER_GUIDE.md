@@ -1,4 +1,342 @@
-dd New RSS Feed"**
+# AI Newsletter Generator - User Guide
+
+Welcome! This guide will help you get the most out of your AI Newsletter Generator. No technical knowledge required - just follow along!
+
+---
+
+## 📚 Table of Contents
+
+1. [Getting Started](#getting-started)
+2. [User Login & Registration](#user-login--registration)
+3. [Dashboard Overview](#dashboard-overview)
+4. [Generating Your First Newsletter](#generating-your-first-newsletter)
+5. [Newsletter Management](#newsletter-management)
+6. [Managing RSS Feeds](#managing-rss-feeds)
+7. [Managing Categories](#managing-categories)
+8. [Viewing Newsletter Archive](#viewing-newsletter-archive)
+9. [User Profile](#user-profile)
+10. [Configuration & Settings](#configuration--settings)
+11. [Common Tasks](#common-tasks)
+12. [Tips & Best Practices](#tips--best-practices)
+13. [Troubleshooting](#troubleshooting)
+
+---
+
+## Getting Started
+
+### What This App Does
+
+This app automatically:
+- **Collects** AI and tech news from multiple sources
+- **Removes duplicates** (same story from different websites)
+- **Creates summaries** using AI to make articles easier to read
+- **Rates importance** of each story (1-10 scale)
+- **Organizes** stories into categories
+- **Generates** beautiful HTML newsletters
+- **Sends** newsletters via email (when configured)
+
+### First Time Setup
+
+When you first open the app, you'll see a login screen. After logging in, you'll see the main interface with a sidebar on the left - that's your navigation menu!
+
+**Navigation Menu:**
+- **Dashboard** - See your stats and activity
+- **Generate Newsletter** - Create a new newsletter
+- **Newsletter Archive** - View past newsletters
+- **Newsletter Management** - Create and customize newsletter profiles
+- **RSS Feed Management** - Add/remove news sources
+- **Category Management** - Organize story categories
+- **User Profile** - Manage your account
+- **Configuration** - Check API connections
+
+### Setting Up API Keys (Required for AI Features)
+
+Before you can generate newsletters with AI summaries, you need to set up your API keys:
+
+#### OpenAI API Key (Required)
+
+This key enables the AI to create summaries, rate stories, and organize them into categories.
+
+**How to get your OpenAI API Key:**
+
+1. Go to https://platform.openai.com/api-keys
+2. Sign in or create an OpenAI account
+3. Click **"Create new secret key"**
+4. Give it a name (e.g., "Newsletter Generator")
+5. Copy the key (starts with `sk-`)
+
+**How to add it to your app:**
+
+1. In Replit, look for the **"Secrets"** tool in the left sidebar (🔒 lock icon)
+2. Click **"+ New Secret"**
+3. For the **key**, type: `OPENAI_API_KEY`
+4. For the **value**, paste your OpenAI key
+5. Click **"Add Secret"**
+6. Refresh your app to load the key
+
+**Checking if it worked:**
+- Go to the **Dashboard** page
+- Look at "API Status" in the top row
+- You should see ✅ **Connected**
+
+#### Resend Email Service (Optional - for sending emails)
+
+Resend is already set up through Replit's integration! You should see ✅ **Connected** under "Resend Status" on the Dashboard.
+
+**If you see ❌ Not Configured:**
+1. Your Resend integration may need to be reconnected
+2. Don't worry - you can still generate newsletters
+3. You just won't be able to email them automatically
+4. You can always download the HTML and send manually
+
+**To enable actual email sending:**
+- Email sending is currently disabled by default for safety
+- Contact your developer to enable it and configure recipient addresses
+
+---
+
+## User Login & Registration
+
+The newsletter generator requires login to keep your data secure and private.
+
+### Creating Your First Account
+
+**Step 1:** When you first visit the app, you'll see the login screen
+
+**Step 2:** Click on the **"Sign Up"** tab
+
+**Step 3:** Fill in your details:
+- **Username** - At least 3 characters, this is how you'll login
+- **Email** - Optional, but recommended for account recovery
+- **Full Name** - Optional, your display name
+- **Password** - At least 6 characters, choose a strong password
+- **Confirm Password** - Type your password again to make sure it matches
+
+**Step 4:** Click **"Create Account"**
+
+**Step 5:** You'll see a success message. Now click the **"Login"** tab
+
+**Step 6:** Enter your username and password, then click **"Login"**
+
+### Logging In
+
+Once you have an account:
+
+1. Open the app
+2. Enter your **Username**
+3. Enter your **Password**
+4. Click **"Login"**
+
+You'll be taken to the Dashboard!
+
+### Security Notes
+
+- Your password is encrypted and never stored in plain text
+- Always use a strong, unique password
+- Don't share your login credentials with others
+- Each user has their own private workspace
+
+### Logging Out
+
+To logout:
+
+1. Look at the sidebar (left side)
+2. You'll see **"Logged in as: [your username]"**
+3. Click the **"🚪 Logout"** button below it
+
+---
+
+## Dashboard Overview
+
+The Dashboard is your home base. Here's what you'll see:
+
+### Status Indicators (Top Row)
+
+1. **API Status** 
+   - ✅ Connected = OpenAI is working (needed for AI summaries)
+   - ❌ No API Key = You need to add your OpenAI key
+
+2. **Resend Status**
+   - ✅ Connected = Email service is ready
+   - ❌ Not Configured = Email not set up yet (newsletters will still generate)
+
+3. **Total Newsletters**
+   - Shows how many newsletters you've created overall
+
+4. **Today's Newsletters**
+   - Shows newsletters created today
+
+### Recent Activity
+
+Below the status indicators, you'll see a list of your most recent newsletters with:
+- Title
+- Creation date and time
+- Number of stories included
+- Whether email was sent
+
+### Scheduling Information
+
+At the bottom, you'll see when the next automatic newsletter will be created (default: 7:00 AM daily).
+
+---
+
+## Generating Your First Newsletter
+
+Let's create your first newsletter!
+
+### Step 1: Navigate to Generate Newsletter
+
+Click **"Generate Newsletter"** in the left sidebar.
+
+### Step 2: Select a Newsletter Configuration
+
+At the top, you'll see a dropdown menu with newsletter options. Each newsletter configuration can have:
+- Custom name
+- Different RSS feed sources
+- Different categories
+- Custom branding (logo, colors)
+- Maximum number of stories
+
+**Default:** If this is your first time, you'll see one default newsletter configuration.
+
+### Step 3: Click "Generate Newsletter Now"
+
+Click the big blue **"🚀 Generate Newsletter Now"** button.
+
+### Step 4: Watch the Progress
+
+You'll see a progress bar showing what's happening:
+
+1. **🔍 Scraping articles** (30-60 seconds)
+   - Collecting news from all selected sources
+
+2. **🔄 Deduplicating stories** (5-10 seconds)
+   - Finding and removing duplicate stories
+
+3. **🤖 Generating AI summaries** (20-40 seconds)
+   - Creating summaries and scoring importance
+
+4. **📄 Generating newsletter** (1-2 seconds)
+   - Creating the final HTML and Markdown versions
+
+5. **📧 Sending email** (if configured)
+   - Sending via Resend email service
+
+**Total time:** About 2-4 minutes
+
+### Step 5: View Your Newsletter
+
+Once complete:
+- Your newsletter appears on screen
+- Two download buttons appear: **Export HTML** and **Export Markdown**
+- Newsletter is automatically saved to the archive
+
+**Export Options:**
+- **HTML** - Beautiful formatted version for email or web
+- **Markdown** - Plain text format for editing or other uses
+
+---
+
+## Newsletter Management
+
+This is where you create and customize different newsletter profiles. Think of each profile as a different "style" of newsletter.
+
+### Creating a New Newsletter Profile
+
+**Step 1:** Go to **"Newsletter Management"** in the sidebar
+
+**Step 2:** Scroll to the **"Create New Newsletter"** section
+
+**Step 3:** Fill in the details:
+
+**Basic Information:**
+- **Name** - Give your newsletter a name (e.g., "AI Weekly Digest")
+- **Description** - Optional description of what this newsletter covers
+- **Max Stories** - How many stories to include (default: 12)
+
+**RSS Feed Selection:**
+- Choose which news sources to use for this newsletter
+- Leave empty to use all enabled feeds
+- Tip: Create specialized newsletters by selecting specific sources
+
+**Category Selection:**
+- Choose which story categories to include
+- Leave empty to use all enabled categories
+- Tip: Create focused newsletters (e.g., only AI Research)
+
+**Step 4:** Click **"➕ Create Newsletter"**
+
+Your new newsletter profile is ready!
+
+### Customizing Newsletter Branding
+
+Each newsletter can have unique branding:
+
+**Step 1:** Find your newsletter in the list
+
+**Step 2:** Click **"Customize Branding"**
+
+**Step 3:** Customize the following:
+
+**Logo:**
+- Upload your logo image (PNG or JPG)
+- Toggle "Show Logo" on/off
+- Logo appears at the top of your newsletter
+
+**Header Colors:**
+- **Background Color** - Pick the header background color
+- **Text Color** - Pick the text color for readability
+- **Font** - Choose from: Arial, Georgia, Courier, Verdana, Times New Roman
+
+**Call-to-Action (CTA) Buttons:**
+- Add up to 3 clickable buttons in your newsletter
+- For each button, set:
+  - **Text** - What the button says (e.g., "Visit Our Website")
+  - **Link** - Where it goes (e.g., https://yourwebsite.com)
+- Empty buttons won't appear
+
+**Step 4:** Click **"💾 Save Branding"**
+
+Your custom branding is applied!
+
+### Editing a Newsletter
+
+1. Find the newsletter in the list
+2. Click **"✏️ Edit"**
+3. Make your changes
+4. Click **"💾 Save Changes"**
+
+### Deleting a Newsletter
+
+1. Find the newsletter in the list
+2. Click **"🗑️ Delete"**
+3. Confirm the deletion
+
+**Warning:** You can't delete if there's only one newsletter configuration!
+
+### Enabling/Disabling Newsletters
+
+Toggle the **"Enabled"** switch to turn newsletters on/off without deleting them.
+
+---
+
+## Managing RSS Feeds
+
+RSS feeds are the news sources where the app collects articles.
+
+### Viewing Your Feeds
+
+Go to **"RSS Feed Management"** to see all your news sources.
+
+Each feed shows:
+- **Name** - Source name (e.g., "TechCrunch AI")
+- **Category** - Type of source (Tech News, Research, etc.)
+- **URL** - The RSS feed address
+- **Status** - Enabled or Disabled
+
+### Adding a New RSS Feed
+
+**Step 1:** Scroll to **"Add New RSS Feed"**
 
 **Step 2:** Fill in the information:
 - **Name** - Friendly name for the source
@@ -136,6 +474,47 @@ For each newsletter, you can:
 
 ---
 
+## User Profile
+
+Manage your account settings and password.
+
+### Accessing Your Profile
+
+Click **"User Profile"** in the sidebar.
+
+### Profile Information
+
+You'll see:
+- **Username** - Your login name (cannot be changed)
+- **Email** - Your email address
+- **Full Name** - Your display name
+- **Member Since** - When you created your account
+- **Last Login** - When you last logged in
+
+### Updating Your Profile
+
+**Step 1:** In the **"Update Profile"** section, you can change:
+- Email address
+- Full name
+
+**Step 2:** Click **"Update Profile"** to save changes
+
+### Changing Your Password
+
+**Step 1:** In the **"Change Password"** section, enter:
+- **Current Password** - Your existing password
+- **New Password** - Your new password (at least 6 characters)
+- **Confirm New Password** - Type new password again
+
+**Step 2:** Click **"Change Password"**
+
+**Security Tips:**
+- Use a strong password with letters, numbers, and symbols
+- Don't reuse passwords from other websites
+- Change your password if you suspect unauthorized access
+
+---
+
 ## Configuration & Settings
 
 The Configuration page shows your system status and settings.
@@ -267,6 +646,19 @@ Shows when newsletters are automatically generated (default: 7:00 AM daily).
 - Add too many CTA buttons (max 3)
 - Use generic button text like "Click Here"
 
+### Account Security
+
+✅ **Do:**
+- Use a strong, unique password
+- Log out when using shared computers
+- Keep your email updated for account recovery
+- Change password regularly
+
+❌ **Don't:**
+- Share your login credentials
+- Use the same password as other websites
+- Leave your account logged in on public computers
+
 ---
 
 ## Troubleshooting
@@ -353,6 +745,26 @@ Shows when newsletters are automatically generated (default: 7:00 AM daily).
 
 ---
 
+### Problem: Can't login
+
+**Solutions:**
+1. Check that username and password are correct
+2. Usernames are case-insensitive
+3. Passwords are case-sensitive
+4. If you forgot your password, contact the administrator
+5. Make sure your account hasn't been deactivated
+
+---
+
+### Problem: "User already exists" when signing up
+
+**Solution:**
+- This username is already taken
+- Try a different username
+- Contact administrator if you believe this is an error
+
+---
+
 ## Need More Help?
 
 ### Quick Reference
@@ -363,9 +775,10 @@ Shows when newsletters are automatically generated (default: 7:00 AM daily).
 - **Newsletter Management** = Configure newsletter profiles
 - **RSS Feed Management** = Manage news sources
 - **Category Management** = Organize story sections
+- **User Profile** = Manage your account
 - **Configuration** = Check API connections
 
-### Video Tour
+### Visual Indicators
 
 Look for visual indicators:
 - ✅ = Success/Connected
@@ -374,6 +787,8 @@ Look for visual indicators:
 - 🚀 = Action button
 - 📊 = Statistics
 - ⚙️ = Settings
+- 👤 = User profile
+- 🔐 = Login/Security
 
 ---
 
@@ -396,6 +811,10 @@ Look for visual indicators:
 **Markdown:** Plain text format that's easy to read and edit
 
 **HTML:** Web page format used for emails and browsers
+
+**Authentication:** Process of verifying user identity (login)
+
+**Encryption:** Converting passwords into a secure format that can't be read
 
 ---
 

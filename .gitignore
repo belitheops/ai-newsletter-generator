@@ -29,6 +29,8 @@ wheels/
 # Data files (generated content)
 newsletters.json
 newsletters.json.backup
+users.json
+users.json.backup
 
 # Logs
 *.log

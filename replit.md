@@ -70,6 +70,17 @@ Preferred communication style: Simple, everyday language.
 - Comprehensive error handling and logging
 - Note: List management handled separately from email sending
 
+**User Authentication** (`auth.py`)
+- Secure user login and registration system
+- Password hashing: PBKDF2-HMAC-SHA256 with 100,000 iterations
+- Cryptographic salt: Random 32-byte salt per user (secrets.token_bytes)
+- User data storage: JSON file (users.json) with hashed passwords and salts
+- Session management: Streamlit session state for authentication
+- Features: User signup, login, logout, profile management, password change
+- Security: All passwords hashed with per-user salts, no plain text storage
+- User profiles: Username, email, full name, creation date, last login
+- Access control: All application pages protected behind authentication
+
 **Scheduling System** (`scheduler.py`)
 - Schedule library for daily 7 AM newsletter generation
 - Threaded execution to avoid blocking web interface

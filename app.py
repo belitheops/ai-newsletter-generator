@@ -14,6 +14,7 @@ from feed_manager import FeedManager
 from category_manager import CategoryManager
 from newsletter_config import NewsletterConfigManager
 from shared_resources import newsletter_generation_lock
+from auth import AuthManager
 import json
 
 # Initialize components
@@ -28,7 +29,145 @@ def initialize_components():
     scheduler = NewsletterScheduler(scraper, deduplicator, summarizer, newsletter_gen, resend, db)
     return scraper, deduplicator, summarizer, newsletter_gen, resend, db, scheduler
 
+@st.cache_resource
+def get_auth_manager():
+    return AuthManager()
+
+def show_login_page():
+    st.title("🔐 Login")
+    st.markdown("Welcome to the AI Newsletter Generator")
+    
+    tab1, tab2 = st.tabs(["Login", "Sign Up"])
+    
+    with tab1:
+        st.subheader("Login to your account")
+        with st.form("login_form"):
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            submit = st.form_submit_button("Login")
+            
+            if submit:
+                if not username or not password:
+                    st.error("Please enter both username and password")
+                else:
+                    auth = get_auth_manager()
+                    verified, user_info = auth.verify_user(username, password)
+                    
+                    if verified:
+                        st.session_state.authenticated = True
+                        st.session_state.user = user_info
+                        st.success(f"Welcome back, {user_info['username']}!")
+                        st.rerun()
+                    else:
+                        st.error("Invalid username or password")
+    
+    with tab2:
+        st.subheader("Create a new account")
+        with st.form("signup_form"):
+            new_username = st.text_input("Username", key="signup_username")
+            new_email = st.text_input("Email (optional)", key="signup_email")
+            new_full_name = st.text_input("Full Name (optional)", key="signup_fullname")
+            new_password = st.text_input("Password", type="password", key="signup_password")
+            confirm_password = st.text_input("Confirm Password", type="password", key="confirm_password")
+            signup_submit = st.form_submit_button("Create Account")
+            
+            if signup_submit:
+                if not new_username or not new_password:
+                    st.error("Username and password are required")
+                elif new_password != confirm_password:
+                    st.error("Passwords do not match")
+                else:
+                    auth = get_auth_manager()
+                    success, message = auth.create_user(
+                        new_username, 
+                        new_password, 
+                        new_email or "", 
+                        new_full_name or ""
+                    )
+                    
+                    if success:
+                        st.success(message + " - Please login with your credentials")
+                    else:
+                        st.error(message)
+
+def show_user_profile():
+    st.header("👤 User Profile")
+    
+    if 'user' not in st.session_state:
+        st.error("Not logged in")
+        return
+    
+    user = st.session_state.user
+    auth = get_auth_manager()
+    
+    col1, col2 = st.columns([1, 2])
+    
+    with col1:
+        st.subheader("Profile Info")
+        st.write(f"**Username:** {user['username']}")
+        st.write(f"**Email:** {user.get('email', 'Not set')}")
+        st.write(f"**Full Name:** {user.get('full_name', 'Not set')}")
+        st.write(f"**Member Since:** {user.get('created_at', 'Unknown')[:10]}")
+        st.write(f"**Last Login:** {user.get('last_login', 'Unknown')[:10]}")
+    
+    with col2:
+        st.subheader("Update Profile")
+        with st.form("update_profile_form"):
+            new_email = st.text_input("Email", value=user.get('email', ''))
+            new_full_name = st.text_input("Full Name", value=user.get('full_name', ''))
+            update_submit = st.form_submit_button("Update Profile")
+            
+            if update_submit:
+                success, message = auth.update_user(
+                    user['username'],
+                    email=new_email,
+                    full_name=new_full_name
+                )
+                if success:
+                    st.success(message)
+                    updated_user = auth.get_user(user['username'])
+                    if updated_user:
+                        st.session_state.user = updated_user
+                        st.rerun()
+                else:
+                    st.error(message)
+        
+        st.subheader("Change Password")
+        with st.form("change_password_form"):
+            old_password = st.text_input("Current Password", type="password")
+            new_password = st.text_input("New Password", type="password")
+            confirm_new_password = st.text_input("Confirm New Password", type="password")
+            password_submit = st.form_submit_button("Change Password")
+            
+            if password_submit:
+                if not old_password or not new_password:
+                    st.error("Please fill in all fields")
+                elif new_password != confirm_new_password:
+                    st.error("New passwords do not match")
+                else:
+                    success, message = auth.change_password(
+                        user['username'],
+                        old_password,
+                        new_password
+                    )
+                    if success:
+                        st.success(message)
+                    else:
+                        st.error(message)
+
 def main():
+    # Initialize session state
+    if 'authenticated' not in st.session_state:
+        st.session_state.authenticated = False
+    if 'user' not in st.session_state:
+        st.session_state.user = None
+    
+    # Show login page if not authenticated
+    if not st.session_state.authenticated:
+        show_login_page()
+        return
+    
+    # Authenticated user content
     st.title("🤖 AI Daily Newsletter Generator")
     st.markdown("Automated daily AI newsletter with intelligent story curation and email distribution")
     
@@ -43,6 +182,17 @@ def main():
     
     # Sidebar navigation
     st.sidebar.title("Navigation")
+    
+    # User info and logout button
+    if st.session_state.user:
+        st.sidebar.markdown(f"**Logged in as:** {st.session_state.user['username']}")
+        if st.sidebar.button("🚪 Logout"):
+            st.session_state.authenticated = False
+            st.session_state.user = None
+            st.rerun()
+    
+    st.sidebar.markdown("---")
+    
     page = st.sidebar.selectbox("Choose a page", [
         "Dashboard", 
         "Generate Newsletter", 
@@ -50,6 +200,7 @@ def main():
         "Newsletter Management",
         "RSS Feed Management",
         "Category Management",
+        "User Profile",
         "Configuration"
     ])
     
@@ -65,6 +216,8 @@ def main():
         show_feed_management(scraper)
     elif page == "Category Management":
         show_category_management(summarizer)
+    elif page == "User Profile":
+        show_user_profile()
     elif page == "Configuration":
         show_configuration()
 
