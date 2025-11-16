@@ -37,26 +37,58 @@ def show_login_page():
     st.title("🔐 Login")
     st.markdown("Welcome to the AI Newsletter Generator")
     
-    st.subheader("Login to your account")
-    with st.form("login_form"):
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
-        submit = st.form_submit_button("Login")
-        
-        if submit:
-            if not username or not password:
-                st.error("Please enter both username and password")
-            else:
-                auth = get_auth_manager()
-                verified, user_info = auth.verify_user(username, password)
-                
-                if verified:
-                    st.session_state.authenticated = True
-                    st.session_state.user = user_info
-                    st.success(f"Welcome back, {user_info['username']}!")
-                    st.rerun()
+    tab1, tab2 = st.tabs(["Login", "Sign Up"])
+    
+    with tab1:
+        st.subheader("Login to your account")
+        with st.form("login_form"):
+            username = st.text_input("Username")
+            password = st.text_input("Password", type="password")
+            submit = st.form_submit_button("Login")
+            
+            if submit:
+                if not username or not password:
+                    st.error("Please enter both username and password")
                 else:
-                    st.error("Invalid username or password")
+                    auth = get_auth_manager()
+                    verified, user_info = auth.verify_user(username, password)
+                    
+                    if verified:
+                        st.session_state.authenticated = True
+                        st.session_state.user = user_info
+                        st.success(f"Welcome back, {user_info['username']}!")
+                        st.rerun()
+                    else:
+                        st.error("Invalid username or password")
+    
+    with tab2:
+        st.subheader("Create a new account")
+        with st.form("signup_form"):
+            new_username = st.text_input("Username", key="signup_username")
+            new_email = st.text_input("Email (optional)", key="signup_email")
+            new_full_name = st.text_input("Full Name (optional)", key="signup_fullname")
+            new_password = st.text_input("Password", type="password", key="signup_password")
+            confirm_password = st.text_input("Confirm Password", type="password", key="confirm_password")
+            signup_submit = st.form_submit_button("Create Account")
+            
+            if signup_submit:
+                if not new_username or not new_password:
+                    st.error("Username and password are required")
+                elif new_password != confirm_password:
+                    st.error("Passwords do not match")
+                else:
+                    auth = get_auth_manager()
+                    success, message = auth.create_user(
+                        new_username, 
+                        new_password, 
+                        new_email or "", 
+                        new_full_name or ""
+                    )
+                    
+                    if success:
+                        st.success(message + " - Please login with your credentials")
+                    else:
+                        st.error(message)
 
 def show_user_profile():
     st.header("👤 User Profile")
