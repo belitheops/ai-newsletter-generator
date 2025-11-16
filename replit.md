@@ -2,7 +2,7 @@
 
 ## Overview
 
-An automated daily newsletter system that collects AI and technology news from 10 trusted sources, intelligently consolidates duplicate stories using TF-IDF similarity matching, generates AI-powered summaries via OpenAI, and distributes beautifully formatted newsletters through SendFox email at 7 AM daily. The system includes a Streamlit web interface for manual triggers, newsletter archives, and real-time status monitoring.
+An automated daily newsletter system that collects AI and technology news from 10 trusted sources, intelligently consolidates duplicate stories using TF-IDF similarity matching, generates AI-powered summaries via OpenAI, and distributes beautifully formatted newsletters through Resend email at 7 AM daily. The system includes a Streamlit web interface for manual triggers, newsletter archives, and real-time status monitoring.
 
 ## User Preferences
 
@@ -150,7 +150,7 @@ Preferred communication style: Simple, everyday language.
 - Persistent threading lock for newsletter generation coordination
 - Survives Streamlit reruns (unlike module-level locks in app.py)
 - Serializes manual and scheduled newsletter runs to prevent concurrent execution
-- Protects database writes and SendFox API sends from race conditions
+- Protects database writes and Resend API sends from race conditions
 - Both app.py and scheduler.py import and use the same lock instance
 
 ### Data Flow
@@ -161,7 +161,7 @@ Preferred communication style: Simple, everyday language.
 4. **Summarization** → Generates AI summaries, scores, and categories via OpenAI (top 15 stories)
 5. **Newsletter Generation** → Creates HTML, Markdown, and text versions (top 12 by impact score)
 6. **Persistence** → Saves to JSON database with all formats
-7. **Distribution** → Sends via SendFox email API
+7. **Distribution** → Sends via Resend email API
 8. **Display** → Available in web interface archive with dual export options
 
 ### Key Design Patterns
